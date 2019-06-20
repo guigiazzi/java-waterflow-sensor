@@ -10,7 +10,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-@Repository
+//@Repository
 public class MongoDBConnection {
 	
 	private MongoClient mongoClient;
