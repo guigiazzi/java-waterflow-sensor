@@ -3,6 +3,9 @@ package maven.arduino.waterFlowSensor.date;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DateAndTime {
 	
 	private Date date;

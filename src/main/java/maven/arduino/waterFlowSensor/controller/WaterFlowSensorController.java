@@ -29,6 +29,7 @@ public class WaterFlowSensorController {
 	@Autowired
 	private MongoDBConnection mongo;
 
+	@Autowired
 	private DateAndTime dateAndTime;
 
 	private StringBuffer response;
@@ -38,7 +39,6 @@ public class WaterFlowSensorController {
 	@RequestMapping(value = "/getData", method = RequestMethod.GET)
 	public String getData() {
 		this.mongo.openConnection();
-		this.dateAndTime = new DateAndTime();
 		
 		sendGETRequest();
 		
