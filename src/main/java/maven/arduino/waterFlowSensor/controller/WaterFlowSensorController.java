@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import maven.arduino.waterFlowSensor.date.DateAndTime;
+//import maven.arduino.waterFlowSensor.date.DateAndTime;
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
@@ -29,8 +29,6 @@ public class WaterFlowSensorController {
 	//@Autowired
 	private MongoDBConnection mongo;
 
-	private DateAndTime dateAndTime;
-
 	private StringBuffer response;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
@@ -40,17 +38,14 @@ public class WaterFlowSensorController {
 		this.domain = new WaterFlowSensorDomain();
 		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
-		this.dateAndTime = new DateAndTime();
 		
 		sendGETRequest();
 		
-		String key = dateAndTime.getTimestamp();
 		String value = response.toString();
 		
-		this.domain.setKey(key);
 		this.domain.setValue(value);
 
-		this.mongo.store(this.domain.getKey(), this.domain.getValue());
+		this.mongo.store(this.domain.getValue());
 		this.mongo.closeConnection();
 
 		return this.response.toString();

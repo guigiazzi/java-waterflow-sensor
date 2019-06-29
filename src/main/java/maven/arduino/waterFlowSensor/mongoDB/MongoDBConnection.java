@@ -8,7 +8,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoDatabase;
+//import com.mongodb.client.MongoDatabase;
 import org.springframework.stereotype.Repository;
 
 //@Repository
@@ -77,10 +77,8 @@ public class MongoDBConnection {
 		this.mongoClient.close();
 	}
 	
-	public void store(String key, String value) {
-		DBObject dataCollected = new BasicDBObject("_id", key)
-				.append("flowRate", value);
-		
+	public void store(String value) {
+		DBObject dataCollected = new BasicDBObject("flowRate", value);
 		this.collection.insert(dataCollected);
 	}
 }
