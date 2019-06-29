@@ -19,7 +19,11 @@ import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 //@RestController
 public class WaterFlowSensorController {
 
-	private static final String URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
+	private static final String WATERFLOW_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
+
+	private static final String USER_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V6";
+
+	private static final String DEVICEID_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V7";
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
@@ -39,7 +43,9 @@ public class WaterFlowSensorController {
 		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
 		
-		sendGETRequest();
+		sendGETRequest(WATERFLOW_URL);
+		sendGETRequest(USER_URL);
+		sendGETRequest(DEVICEID_URL);
 		
 		String value = response.toString();
 		
@@ -51,7 +57,7 @@ public class WaterFlowSensorController {
 		return this.response.toString();
 	}
 
-	private void sendGETRequest() {
+	private void sendGETRequest(String URL) {
 		try {
 			URL obj = new URL(URL);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
