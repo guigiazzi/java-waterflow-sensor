@@ -2,19 +2,22 @@ package maven.arduino.waterFlowSensor.mongoDB;
 
 import java.net.UnknownHostException;
 
-import org.springframework.stereotype.Repository;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
+import org.springframework.stereotype.Repository;
 
 //@Repository
 public class MongoDBConnection {
 	
 	private MongoClient mongoClient;
 	
+	//private MongoDatabase database;
+
 	private DB database;
 	
 	private DBCollection collection;
@@ -29,6 +32,14 @@ public class MongoDBConnection {
 	public void setMongoClient(MongoClient mongoClient) {
 		this.mongoClient = mongoClient;
 	}
+
+	/*public MongoDatabase getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(MongoDatabase database) {
+		this.database = database;
+	}*/
 
 	public DB getDatabase() {
 		return database;
@@ -46,6 +57,12 @@ public class MongoDBConnection {
 		this.collection = collection;
 	}	
 	
+	/*public void openConnection() {
+		MongoClientURI uri = new MongoClientURI("mongodb+srv://admin:admin@waterflowsensorcluster-qkxa6.gcp.mongodb.net/WaterFlowSensorDB?retryWrites=true&w=majority");
+		this.mongoClient = new MongoClient(uri);
+		this.database = mongoClient.getDatabase("WaterFlowSensorDB");
+	}*/
+
 	public void openConnection() {
 		try {
 			this.mongoClient = new MongoClient();
