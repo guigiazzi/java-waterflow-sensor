@@ -7,9 +7,8 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-//import com.mongodb.client.MongoDatabase;
-import org.springframework.stereotype.Repository;
+
+import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 
 //@Repository
 public class MongoDBConnection {
@@ -77,8 +76,10 @@ public class MongoDBConnection {
 		this.mongoClient.close();
 	}
 	
-	public void store(String value) {
-		DBObject dataCollected = new BasicDBObject("flowRate", value);
+	public void store(WaterFlowSensorDomain domain) {
+		DBObject dataCollected = new BasicDBObject("flowRate", domain.getValue())
+				.append("userID", domain.getUser())
+				.append("deviceID", domain.getDeviceId());
 		this.collection.insert(dataCollected);
 	}
 }

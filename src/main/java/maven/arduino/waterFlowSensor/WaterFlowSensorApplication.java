@@ -14,6 +14,7 @@ public class WaterFlowSensorApplication {
 
 	public static void main(String[] args) {
 		WaterFlowSensorController controller = new WaterFlowSensorController();
-		System.out.println(controller.getData());
+		controller.getData();
+		//System.out.println(controller.getData());
 	}
 }

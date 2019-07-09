@@ -38,23 +38,25 @@ public class WaterFlowSensorController {
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
 	//@RequestMapping(value = "/getData", method = RequestMethod.GET)
-	public String getData() {
+	public void getData() {
 		this.domain = new WaterFlowSensorDomain();
 		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
-		sendGETRequest(USER_URL);
-		sendGETRequest(DEVICEID_URL);
-		
 		String value = response.toString();
-		
 		this.domain.setValue(value);
-
-		this.mongo.store(this.domain.getValue());
+		
+		sendGETRequest(USER_URL);
+		String userId = response.toString();
+		this.domain.setUser(userId);
+		
+		sendGETRequest(DEVICEID_URL);
+		String deviceId = response.toString();
+		this.domain.setDeviceId(deviceId);
+		
+		this.mongo.store(this.domain);
 		this.mongo.closeConnection();
-
-		return this.response.toString();
 	}
 
 	private void sendGETRequest(String URL) {
