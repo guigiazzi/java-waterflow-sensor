@@ -79,7 +79,8 @@ public class MongoDBConnection {
 	public void store(WaterFlowSensorDomain domain) {
 		DBObject dataCollected = new BasicDBObject("flowRate", domain.getValue())
 				.append("userID", domain.getUser())
-				.append("deviceID", domain.getDeviceId());
+				.append("deviceID", domain.getDeviceId())
+				.append("description", domain.getDescription());
 		this.collection.insert(dataCollected);
 	}
 }

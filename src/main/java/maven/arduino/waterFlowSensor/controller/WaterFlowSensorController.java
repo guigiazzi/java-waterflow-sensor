@@ -24,6 +24,8 @@ public class WaterFlowSensorController {
 	private static final String USER_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V6";
 
 	private static final String DEVICEID_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V7";
+	
+	private static final String DESCRIPTION_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V8";
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
@@ -54,6 +56,10 @@ public class WaterFlowSensorController {
 		sendGETRequest(DEVICEID_URL);
 		String deviceId = response.toString();
 		this.domain.setDeviceId(deviceId);
+		
+		sendGETRequest(DESCRIPTION_URL);
+		String description = response.toString();
+		this.domain.setDescription(description);
 		
 		this.mongo.store(this.domain);
 		this.mongo.closeConnection();
