@@ -1,23 +1,22 @@
 package maven.arduino.waterFlowSensor.mongoDB;
 
-import java.net.UnknownHostException;
+import org.bson.Document;
 
-import org.springframework.stereotype.Repository;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
-@Repository
+import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
+
+//@Repository
 public class MongoDBConnection {
 	
 	private MongoClient mongoClient;
 	
-	private DB database;
+	private MongoDatabase database;
 	
-	private DBCollection collection;
+	private MongoCollection<Document> collection;
 	
 	public MongoDBConnection() {
 	}
@@ -30,40 +29,38 @@ public class MongoDBConnection {
 		this.mongoClient = mongoClient;
 	}
 
-	public DB getDatabase() {
+	public MongoDatabase getDatabase() {
 		return database;
 	}
 
-	public void setDatabase(DB database) {
+	public void setDatabase(MongoDatabase database) {
 		this.database = database;
 	}
 
-	public DBCollection getCollection() {
+	public MongoCollection<Document> getCollection() {
 		return collection;
 	}
 
-	public void setCollection(DBCollection collection) {
+	public void setCollection(MongoCollection<Document> collection) {
 		this.collection = collection;
 	}	
 	
 	public void openConnection() {
-		try {
-			this.mongoClient = new MongoClient();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		this.database = mongoClient.getDB("local");
-		this.collection = database.getCollection("startup_log");
+		MongoClientURI uri = new MongoClientURI("mongodb://admin:admin@cluster0-shard-00-00-qkxa6.mongodb.net:27017,cluster0-shard-00-01-qkxa6.mongodb.net:27017,cluster0-shard-00-02-qkxa6.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority");
+		this.mongoClient = new MongoClient(uri);
+		this.database = mongoClient.getDatabase("waterFlowDB");
+		this.collection = database.getCollection("waterFlowCollection");
 	}
 	
 	public void closeConnection() {
 		this.mongoClient.close();
 	}
 	
-	public void store(String key, String value) {
-		DBObject dataCollected = new BasicDBObject("_id", key)
-				.append("flowRate", value);
-		
-		this.collection.insert(dataCollected);
+	public void store(WaterFlowSensorDomain domain) {
+		Document dataCollected = new Document("flowRate", domain.getValue())
+				.append("userID", domain.getUser())
+				.append("deviceID", domain.getDeviceId())
+				.append("description", domain.getDescription());
+		this.collection.insertOne(dataCollected);
 	}
 }
