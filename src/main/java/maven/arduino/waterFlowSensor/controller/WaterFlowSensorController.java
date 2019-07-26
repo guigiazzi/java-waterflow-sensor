@@ -32,6 +32,7 @@ public class WaterFlowSensorController {
 	private DateAndTime dateAndTime;
 
 	private StringBuffer response;
+	
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
