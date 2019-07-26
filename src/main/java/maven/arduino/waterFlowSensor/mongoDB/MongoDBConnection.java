@@ -56,7 +56,13 @@ public class MongoDBConnection {
 	}	
 	
 	public void openConnection() {
-		MongoClientURI uri = new MongoClientURI("mongodb+srv://admin:admin@cluster0-qkxa6.mongodb.net/test?retryWrites=true&w=majority");
+		//possivelmente é preciso se conectar via replica set
+		
+//		MongoClientURI uri = new MongoClientURI("mongodb+srv://admin:admin@cluster0-qkxa6.mongodb.net/test?retryWrites=true&w=majority");
+//		MongoClientURI uri = new MongoClientURI("mongodb://host1:27017,host2:27017,host3:27017");
+		MongoClientURI uri = new MongoClientURI("mongodb://cluster0-shard-00-00-qkxa6.mongodb.net:27017," + 
+												"cluster0-shard-00-01-qkxa6.mongodb.net:27017," + 
+												"cluster0-shard-00-02-qkxa6.mongodb.net:27017");
 		this.mongoClient = new MongoClient(uri);
 		this.database = mongoClient.getDatabase("waterFlowDB");
 		this.collection = database.getCollection("waterFlowCollection");
