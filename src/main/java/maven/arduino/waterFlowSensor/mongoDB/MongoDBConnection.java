@@ -9,7 +9,6 @@ import com.mongodb.client.MongoDatabase;
 
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 
-//@Repository
 public class MongoDBConnection {
 	
 	private MongoClient mongoClient;
