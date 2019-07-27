@@ -68,10 +68,7 @@ void myTimerEvent()
   Blynk.virtualWrite(V5, media);
   Blynk.virtualWrite(V6, user);
   Blynk.virtualWrite(V7, deviceId);
-<<<<<<< HEAD
-=======
   Blynk.virtualWrite(V8, description);
->>>>>>> 7534127c999c23a116af81ad40916f98d78dc629
   media = 0; //Zera a variável media para uma nova contagem
   i=0; //Zera a variável i para uma nova contagem
 }
