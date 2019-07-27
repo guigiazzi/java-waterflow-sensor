@@ -8,6 +8,7 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import maven.arduino.waterFlowSensor.date.DateAndTime;
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
@@ -26,8 +27,8 @@ public class WaterFlowSensorController {
 	private WaterFlowSensorDomain domain;
 
 	private MongoDBConnection mongo;
-
-	private StringBuffer response;
+	
+	private String responseString;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
@@ -37,22 +38,32 @@ public class WaterFlowSensorController {
 		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
-		String value = response.toString();
-		this.domain.setValue(value);
+		String flowRate = this.responseString;
+		this.domain.setFlowRate(flowRate);
 		
 		sendGETRequest(USER_URL);
-		String userId = response.toString();
+		String userId = this.responseString;
 		this.domain.setUser(userId);
 		
 		sendGETRequest(DEVICEID_URL);
-		String deviceId = response.toString();
+		String deviceId = this.responseString;
 		this.domain.setDeviceId(deviceId);
 		
 		sendGETRequest(DESCRIPTION_URL);
-		String description = response.toString();
+		String description = this.responseString;
 		this.domain.setDescription(description);
 		
-		this.mongo.store(this.domain);
+		DateAndTime time = new DateAndTime();
+		String timestamp = time.getTimestamp();
+		this.domain.setTimestamp(timestamp);
+		
+		try {
+			LOGGER.info("Inserindo " + this.domain.toString() + " no Mongo");
+			this.mongo.store(this.domain);
+		} catch(Exception e) {
+			LOGGER.error("Ocorreu um erro ao inserir no Mongo", e);
+		}
+		
 		this.mongo.closeConnection();
 	}
 
@@ -67,12 +78,24 @@ public class WaterFlowSensorController {
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
-				this.response = new StringBuffer();
-
+				StringBuffer response = new StringBuffer();
+								
 				while ((inputLine = in.readLine()) != null) {
-					this.response.append(inputLine);
+					response.append(inputLine);
 				}
+				
+				this.responseString = response.toString();
+
+				if(this.responseString.contains("[") && this.responseString.contains("]")) { // removendo caracteres [ e ]
+					this.responseString = this.responseString.replace("[", "").replace("]", "");
+				}
+				
+				if(this.responseString.contains("\"")) { // removendo aspas, pois o Mongo ja as insere, ficando duplicado
+					this.responseString = this.responseString.replace("\"", "");
+				}
+				
 				in.close();
+				
 			} else {
 				throw new UnknownError();
 			}

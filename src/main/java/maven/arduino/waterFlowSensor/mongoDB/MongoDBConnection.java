@@ -56,10 +56,11 @@ public class MongoDBConnection {
 	}
 	
 	public void store(WaterFlowSensorDomain domain) {
-		Document dataCollected = new Document("flowRate", domain.getValue())
+		Document dataCollected = new Document("flowRate", domain.getFlowRate())
 				.append("userID", domain.getUser())
 				.append("deviceID", domain.getDeviceId())
-				.append("description", domain.getDescription());
+				.append("description", domain.getDescription())
+				.append("timestamp", domain.getTimestamp());
 		this.collection.insertOne(dataCollected);
 	}
 }
