@@ -62,5 +62,6 @@ public class MongoDBConnection {
 				.append("description", domain.getDescription())
 				.append("timestamp", domain.getTimestamp());
 		this.collection.insertOne(dataCollected);
+		//this.collection.deleteMany(new Document()); para deletar todos os documentos da collection
 	}
 }
