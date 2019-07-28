@@ -35,7 +35,7 @@ public class DateAndTime {
 
 	public String getTimestamp() {
 		String formatTimestamp = this.timestamp.toString();
-		String newTimestamp = formatTimestamp.substring(11, 19) + " / " + formatTimestamp.substring(0, 10);
+		String newTimestamp = formatTimestamp.substring(0, 10) + " / " + formatTimestamp.substring(11, 19);
 		return newTimestamp;
 	}
 }

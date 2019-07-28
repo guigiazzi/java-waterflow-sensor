@@ -38,7 +38,7 @@ public class WaterFlowSensorController {
 		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
-		String flowRate = this.responseString;
+		double flowRate = Double.parseDouble(this.responseString);
 		this.domain.setFlowRate(flowRate);
 		
 		sendGETRequest(USER_URL);
