@@ -15,7 +15,8 @@ String user = "Guilherme Giazzi";
 String deviceId = "18-FE-34-68-F1-A9";
 String description = "Pia da cozinha";
 
-String deviceIdList[] = {"00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-DD-EE", "33-DD-04-EE-FF"};
+String userList[] = {"João da Silva", "Matheus Augusto", "Felipe Rocha", "Guilherme Henrique"};
+String deviceIdList[] = {"00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-D, D-EE", "33-DD-04-EE-FF"};
 String descriptionList[] = {"Pia do banheiro", "Filtro de água", "Máquina de lavar roupas", "Mangueira do jardim"};
 
 #include <SoftwareSerial.h>
@@ -67,10 +68,11 @@ void loop()
 void myTimerEvent()
 {
   //sensorData = analogRead(A0);
-  Serial.println(media);
-  Blynk.virtualWrite(V5, media);
-  Blynk.virtualWrite(V6, user);
   int randomNumber = random(0,4);
+  float randomMedia = random(0,36);
+  //Serial.println(media);
+  Blynk.virtualWrite(V5, randomMedia);
+  Blynk.virtualWrite(V6, userList[randomNumber]);
   Blynk.virtualWrite(V7, deviceIdList[randomNumber]);
   Blynk.virtualWrite(V8, descriptionList[randomNumber]);
   media = 0; //Zera a variável media para uma nova contagem
