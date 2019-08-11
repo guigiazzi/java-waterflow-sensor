@@ -40,7 +40,7 @@ public class WaterFlowSensorController {
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
 	@RequestMapping(value = "/getData", method = RequestMethod.GET)
-	public void getData() {
+	public String getData() {
 //		this.domain = new WaterFlowSensorDomain();
 //		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
@@ -68,12 +68,13 @@ public class WaterFlowSensorController {
 		try {
 			LOGGER.info("Inserindo " + this.domain.toString() + " no Mongo");
 			this.mongo.store(this.domain);
-			System.out.println(this.domain.toString());
 		} catch(Exception e) {
 			LOGGER.error("Ocorreu um erro ao inserir no Mongo", e);
 		}
 		
 		this.mongo.closeConnection();
+		
+		return this.domain.toString();
 	}
 
 	private void sendGETRequest(String URL) {
