@@ -7,55 +7,69 @@ import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import maven.arduino.waterFlowSensor.date.DateAndTime;
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
-@RestController
 public class WaterFlowSensorController {
 
-	private static final String URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
+	private static final String WATERFLOW_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
+
+	private static final String USER_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V6";
+
+	private static final String DEVICEID_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V7";
+	
+	private static final String DESCRIPTION_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V8";
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
-	@Autowired
 	private WaterFlowSensorDomain domain;
 
-	@Autowired
 	private MongoDBConnection mongo;
 
 	private DateAndTime dateAndTime;
-
-	private StringBuffer response;
 	
+	private String responseString;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
-	@RequestMapping(value = "/getData", method = RequestMethod.GET)
-	public String getData() {
+	public void getData() {
+		this.domain = new WaterFlowSensorDomain();
+		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
-		this.dateAndTime = new DateAndTime();
 		
-		sendGETRequest();
+		sendGETRequest(WATERFLOW_URL);
+		double flowRate = Double.parseDouble(this.responseString);
+		this.domain.setFlowRate(flowRate);
 		
-		String key = dateAndTime.getTimestamp();
-		String value = response.toString();
+		sendGETRequest(USER_URL);
+		String userId = this.responseString;
+		this.domain.setUser(userId);
 		
-		this.domain.setKey(key);
-		this.domain.setValue(value);
-
-		this.mongo.store(this.domain.getKey(), this.domain.getValue());
+		sendGETRequest(DEVICEID_URL);
+		String deviceId = this.responseString;
+		this.domain.setDeviceId(deviceId);
+		
+		sendGETRequest(DESCRIPTION_URL);
+		String description = this.responseString;
+		this.domain.setDescription(description);
+		
+		DateAndTime time = new DateAndTime();
+		String timestamp = time.getTimestamp();
+		this.domain.setTimestamp(timestamp);
+		
+		try {
+			LOGGER.info("Inserindo " + this.domain.toString() + " no Mongo");
+			this.mongo.store(this.domain);
+		} catch(Exception e) {
+			LOGGER.error("Ocorreu um erro ao inserir no Mongo", e);
+		}
+		
 		this.mongo.closeConnection();
-
-		return this.response.toString();
 	}
 
-	private void sendGETRequest() {
+	private void sendGETRequest(String URL) {
 		try {
 			URL obj = new URL(URL);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -66,12 +80,24 @@ public class WaterFlowSensorController {
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
-				this.response = new StringBuffer();
-
+				StringBuffer response = new StringBuffer();
+								
 				while ((inputLine = in.readLine()) != null) {
-					this.response.append(inputLine);
+					response.append(inputLine);
 				}
+				
+				this.responseString = response.toString();
+
+				if(this.responseString.contains("[") && this.responseString.contains("]")) { // removendo caracteres [ e ]
+					this.responseString = this.responseString.replace("[", "").replace("]", "");
+				}
+				
+				if(this.responseString.contains("\"")) { // removendo aspas, pois o Mongo ja as insere, ficando duplicado
+					this.responseString = this.responseString.replace("\"", "");
+				}
+				
 				in.close();
+				
 			} else {
 				throw new UnknownError();
 			}

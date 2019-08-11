@@ -1,27 +1,59 @@
 package maven.arduino.waterFlowSensor.domain;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class WaterFlowSensorDomain {
 	
-	private String key;
+	private String user;
 	
-	private String value;
+	private String deviceId;
 	
-	public String getKey() {
-		return this.key;
+	private double flowRate;
+	
+	private String description;
+	
+	private String timestamp;
+
+	public String getUser() {
+		return user;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
-	public String getValue() {
-		return value;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public double getFlowRate() {
+		return flowRate;
+	}
+
+	public void setFlowRate(double flowRate) {
+		this.flowRate = flowRate;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+	
+	@Override
+	public String toString() {
+		return "{\"flowRate\": \"" + this.flowRate + "\", \"userID\": \"" + this.user + "\", \"deviceID\": \"" + this.deviceId + "\", \"description\": \"" + this.description + "\", \"timestamp\": \"" + this.timestamp + "\"}";
 	}
 }
