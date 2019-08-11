@@ -7,11 +7,16 @@ import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import maven.arduino.waterFlowSensor.date.DateAndTime;
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
+@RestController
 public class WaterFlowSensorController {
 
 	private static final String WATERFLOW_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
@@ -24,19 +29,20 @@ public class WaterFlowSensorController {
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
+	@Autowired
 	private WaterFlowSensorDomain domain;
 
+	@Autowired
 	private MongoDBConnection mongo;
-
-	private DateAndTime dateAndTime;
 	
 	private String responseString;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
+	@RequestMapping(value = "/getData", method = RequestMethod.GET)
 	public void getData() {
-		this.domain = new WaterFlowSensorDomain();
-		this.mongo = new MongoDBConnection();
+//		this.domain = new WaterFlowSensorDomain();
+//		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
@@ -62,6 +68,7 @@ public class WaterFlowSensorController {
 		try {
 			LOGGER.info("Inserindo " + this.domain.toString() + " no Mongo");
 			this.mongo.store(this.domain);
+			System.out.println(this.domain.toString());
 		} catch(Exception e) {
 			LOGGER.error("Ocorreu um erro ao inserir no Mongo", e);
 		}

@@ -15,7 +15,8 @@ String user = "Guilherme Giazzi";
 String deviceId = "18-FE-34-68-F1-A9";
 String description = "Pia da cozinha";
 
-String deviceIdList[] = ["00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-DD-EE", "33-DD-04-EE-FF"];
+String deviceIdList[] = {"00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-DD-EE", "33-DD-04-EE-FF"};
+String descriptionList[] = {"Pia do banheiro", "Filtro de água", "Máquina de lavar roupas", "Mangueira do jardim"};
 
 #include <SoftwareSerial.h>
 SoftwareSerial EspSerial(10, 11); // RX, TX
@@ -69,8 +70,9 @@ void myTimerEvent()
   Serial.println(media);
   Blynk.virtualWrite(V5, media);
   Blynk.virtualWrite(V6, user);
-  Blynk.virtualWrite(V7, deviceId);
-  Blynk.virtualWrite(V8, description);
+  int randomNumber = random(0,4);
+  Blynk.virtualWrite(V7, deviceIdList[randomNumber]);
+  Blynk.virtualWrite(V8, descriptionList[randomNumber]);
   media = 0; //Zera a variável media para uma nova contagem
   i=0; //Zera a variável i para uma nova contagem
 }

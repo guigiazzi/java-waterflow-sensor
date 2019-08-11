@@ -1,5 +1,8 @@
 package maven.arduino.waterFlowSensor.domain;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class WaterFlowSensorDomain {
 	
 	private String user;
