@@ -12,7 +12,10 @@ char auth[] = "24d6fecc78b74ce39ed55c8a09f0823f";
 char ssid[] = "SEGJC";
 char pass[] = "42645283";
 String user = "Guilherme Giazzi";
-String deviceId = "Pia da cozinha";
+String deviceId = "18-FE-34-68-F1-A9";
+String description = "Pia da cozinha";
+
+String deviceIdList[] = ["00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-DD-EE", "33-DD-04-EE-FF"];
 
 #include <SoftwareSerial.h>
 SoftwareSerial EspSerial(10, 11); // RX, TX
@@ -67,6 +70,7 @@ void myTimerEvent()
   Blynk.virtualWrite(V5, media);
   Blynk.virtualWrite(V6, user);
   Blynk.virtualWrite(V7, deviceId);
+  Blynk.virtualWrite(V8, description);
   media = 0; //Zera a variável media para uma nova contagem
   i=0; //Zera a variável i para uma nova contagem
 }
