@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
+import org.quartz.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
 @RestController
-public class WaterFlowSensorController {
+public class WaterFlowSensorController implements Job {
 
 	private static final String WATERFLOW_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V5";
 
