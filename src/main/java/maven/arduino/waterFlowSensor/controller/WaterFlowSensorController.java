@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,30 +37,40 @@ public class WaterFlowSensorController {
 	private MongoDBConnection mongo;
 	
 	private String responseString;
+	
+	//dados falsos para analise
+	private String userList[] = {"João da Silva", "Matheus Augusto", "Felipe Rocha", "Guilherme Henrique"};
+	private String deviceIdList[] = {"00-AA-01-BB-CC", "11-BB-02-CC-DD", "22-CC-03-D, D-EE", "33-DD-04-EE-FF"};
+	private String descriptionList[] = {"Pia do banheiro", "Filtro de água", "Máquina de lavar roupas", "Mangueira do jardim"};
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
 	@RequestMapping(value = "/getData", method = RequestMethod.GET)
 	public String getData() {
-//		this.domain = new WaterFlowSensorDomain();
-//		this.mongo = new MongoDBConnection();
 		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
 		double flowRate = Double.parseDouble(this.responseString);
-		this.domain.setFlowRate(flowRate);
+		//this.domain.setFlowRate(flowRate);
+		Random r1 = new Random();
+		this.domain.setFlowRate(r1.nextInt(36));
 		
 		sendGETRequest(USER_URL);
 		String userId = this.responseString;
-		this.domain.setUser(userId);
+		//this.domain.setUser(userId);
+		Random r2 = new Random();
+		this.domain.setUser(userList[r2.nextInt(4)]);
 		
 		sendGETRequest(DEVICEID_URL);
 		String deviceId = this.responseString;
-		this.domain.setDeviceId(deviceId);
+		//this.domain.setDeviceId(deviceId);
+		int randomNumber = r2.nextInt(4);
+		this.domain.setDeviceId(deviceIdList[randomNumber]);
 		
 		sendGETRequest(DESCRIPTION_URL);
 		String description = this.responseString;
-		this.domain.setDescription(description);
+		//this.domain.setDescription(description);
+		this.domain.setDescription(descriptionList[randomNumber]);
 		
 		DateAndTime time = new DateAndTime();
 		String timestamp = time.getTimestamp();
