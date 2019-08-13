@@ -7,9 +7,19 @@ import java.net.URL;
 import java.util.Random;
 
 import org.quartz.Job;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +56,35 @@ public class WaterFlowSensorController implements Job {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		System.out.println("hello world");
+	}
+	
+	@Bean
+	public JobDetail jobDetail() {
+		return JobBuilder.newJob().ofType(WaterFlowSensorController.class)
+				.storeDurably()
+				.withIdentity("job do waterFlowSensor")
+				.withDescription("inicia um job do waterFlowSensor")
+				.build();
+	}
+	
+	@Bean
+	public Trigger trigger (JobDetail job) {
+		return TriggerBuilder.newTrigger().forJob(job)
+				.withIdentity("trigger para o job do waterFlowSensor")
+				.withDescription("inicia um trigger para chamar o job do waterFlowSensor")
+				.build();
+	}
+	
+	@Bean
+	public Scheduler scheduler(Trigger trigger,  JobDetail job, SchedulerFactoryBean factory) throws SchedulerException{
+		Scheduler scheduler = factory.getScheduler();
+		scheduler.scheduleJob(job, trigger);
+		scheduler.start();
+		return scheduler;
+	}
+	
 	@RequestMapping(value = "/getData", method = RequestMethod.GET)
 	public String getData() {
 		this.mongo.openConnection();
