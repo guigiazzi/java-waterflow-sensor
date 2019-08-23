@@ -9,7 +9,7 @@ public class WaterFlowSensorDomain {
 	
 	private String deviceId;
 	
-	private double flowRate;
+	private String flowRate;
 	
 	private String description;
 	
@@ -31,11 +31,11 @@ public class WaterFlowSensorDomain {
 		this.deviceId = deviceId;
 	}
 
-	public double getFlowRate() {
+	public String getFlowRate() {
 		return flowRate;
 	}
-
-	public void setFlowRate(double flowRate) {
+	
+	public void setFlowRate(String flowRate) {
 		this.flowRate = flowRate;
 	}
 	

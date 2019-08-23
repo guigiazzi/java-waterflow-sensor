@@ -1,11 +1,5 @@
 package maven.arduino.waterFlowSensor.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +7,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import maven.arduino.waterFlowSensor.date.DateAndTime;
 import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
-import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
+//import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
 
 @RestController
 public class WaterFlowSensorController {
@@ -29,13 +24,14 @@ public class WaterFlowSensorController {
 	
 	private static final String DESCRIPTION_URL = "http://blynk-cloud.com/24d6fecc78b74ce39ed55c8a09f0823f/get/V8";
 
-	private static final String USER_AGENT = "Mozilla/5.0";
-
 	@Autowired
 	private WaterFlowSensorDomain domain;
 
+//	@Autowired
+//	private MongoDBConnection mongo;
+	
 	@Autowired
-	private MongoDBConnection mongo;
+	private RestTemplate restTemplate;
 	
 	private String responseString;
 	
@@ -46,33 +42,33 @@ public class WaterFlowSensorController {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 	
-	@Scheduled(fixedRate = 1000)
+	//@Scheduled(fixedRate = 1000)
 	@RequestMapping(value = "/getData", method = RequestMethod.GET)
 	public String getData() {
-		this.mongo.openConnection();
+//		this.mongo.openConnection();
 		
 		sendGETRequest(WATERFLOW_URL);
-		double flowRate = Double.parseDouble(this.responseString);
-		//this.domain.setFlowRate(flowRate);
-		Random r1 = new Random();
-		this.domain.setFlowRate(r1.nextInt(36));
+		String flowRate = this.responseString;
+		this.domain.setFlowRate(flowRate);
+		//Random r1 = new Random();
+		//this.domain.setFlowRate(r1.nextInt(36));
 		
 		sendGETRequest(USER_URL);
 		String userId = this.responseString;
-		//this.domain.setUser(userId);
-		Random r2 = new Random();
-		this.domain.setUser(userList[r2.nextInt(4)]);
+		this.domain.setUser(userId);
+		//Random r2 = new Random();
+		//this.domain.setUser(userList[r2.nextInt(4)]);
 		
 		sendGETRequest(DEVICEID_URL);
 		String deviceId = this.responseString;
-		//this.domain.setDeviceId(deviceId);
-		int randomNumber = r2.nextInt(4);
-		this.domain.setDeviceId(deviceIdList[randomNumber]);
+		this.domain.setDeviceId(deviceId);
+		//int randomNumber = r2.nextInt(4);
+		//this.domain.setDeviceId(deviceIdList[randomNumber]);
 		
 		sendGETRequest(DESCRIPTION_URL);
 		String description = this.responseString;
-		//this.domain.setDescription(description);
-		this.domain.setDescription(descriptionList[randomNumber]);
+		this.domain.setDescription(description);
+		//this.domain.setDescription(descriptionList[randomNumber]);
 		
 		DateAndTime time = new DateAndTime();
 		String timestamp = time.getTimestamp();
@@ -80,48 +76,25 @@ public class WaterFlowSensorController {
 		
 		try {
 			LOGGER.info("Inserindo " + this.domain.toString() + " no Mongo");
-			this.mongo.store(this.domain);
+//			this.mongo.store(this.domain);
 		} catch(Exception e) {
 			LOGGER.error("Ocorreu um erro ao inserir no Mongo", e);
 		}
 		
-		this.mongo.closeConnection();
+//		this.mongo.closeConnection();
 		
 		return this.domain.toString();
 	}
 
 	private void sendGETRequest(String URL) {
 		try {
-			URL obj = new URL(URL);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			int responseCode;
-			responseCode = con.getResponseCode();
-			if (responseCode == HttpURLConnection.HTTP_OK) { // success
-				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String inputLine;
-				StringBuffer response = new StringBuffer();
-								
-				while ((inputLine = in.readLine()) != null) {
-					response.append(inputLine);
-				}
-				
-				this.responseString = response.toString();
-
-				if(this.responseString.contains("[") && this.responseString.contains("]")) { // removendo caracteres [ e ]
-					this.responseString = this.responseString.replace("[", "").replace("]", "");
-				}
-				
-				if(this.responseString.contains("\"")) { // removendo aspas, pois o Mongo ja as insere, ficando duplicado
-					this.responseString = this.responseString.replace("\"", "");
-				}
-				
-				in.close();
-				
-			} else {
-				throw new UnknownError();
+			this.responseString = restTemplate.getForObject(URL, String.class);
+			
+			if(this.responseString.contains("[") && this.responseString.contains("]")) { // removendo caracteres [ e ]
+				this.responseString = this.responseString.replace("[", "").replace("]", "");
 			}
+			
+			System.out.println(responseString);
 		} catch (Exception e) {
 			LOGGER.error("Ocorreu um erro ao mandar a requisição GET");
 		}
