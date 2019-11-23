@@ -3,8 +3,9 @@ package maven.arduino.waterFlowSensor.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -32,16 +33,18 @@ public class WaterFlowSensorController {
 	private WaterFlowSensorDomain domain;
 	
 	@Autowired
-	private MongoDBConnection mongo;
+	private MongoDBConnection mongoDB;
 
 	@Autowired
 	private RestTemplate restTemplate;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(WaterFlowSensorController.class);
 
+	@Scheduled(fixedRate = 60000)
+	@Async
 	@GetMapping(value = "/getData")
 	public void getData() {
-		this.mongo.openConnection();
+		this.mongoDB.openConnection();
 
 		double flowRate = Double.parseDouble(sendGETRequest(waterFlowURL));
 		this.domain.setFlowRate(flowRate);
@@ -61,12 +64,12 @@ public class WaterFlowSensorController {
 
 		try {
 			LOGGER.info("!!! Inserindo " + this.domain.toString() + " no MongoDB !!!!");
-			this.mongo.store(this.domain);
+			this.mongoDB.store(this.domain);
 		} catch (Exception e) {
 			LOGGER.error("Ocorreu um erro ao inserir no MongoDB", e);
 		}
 
-		this.mongo.closeConnection();
+		this.mongoDB.closeConnection();
 	}
 
 	private String sendGETRequest(String URL) {

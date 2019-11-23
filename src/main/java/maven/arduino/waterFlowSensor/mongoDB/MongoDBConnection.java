@@ -23,6 +23,12 @@ public class MongoDBConnection {
 	@Value("${CONNECTION_STRING}")
 	private String connectionString;
 	
+	@Value("${DATABASE_NAME}")
+	private String databaseName;
+	
+	@Value("${COLLECTION_NAME}")
+	private String collectionName;
+	
 	public MongoDBConnection() {
 	}
 	
@@ -53,8 +59,8 @@ public class MongoDBConnection {
 	public void openConnection() {
 		MongoClientURI uri = new MongoClientURI(connectionString);
 		this.mongoClient = new MongoClient(uri);
-		this.database = mongoClient.getDatabase("waterFlowDB");
-		this.collection = database.getCollection("waterFlowCollection");
+		this.database = mongoClient.getDatabase(databaseName);
+		this.collection = database.getCollection(collectionName);
 	}
 	
 	public void closeConnection() {
