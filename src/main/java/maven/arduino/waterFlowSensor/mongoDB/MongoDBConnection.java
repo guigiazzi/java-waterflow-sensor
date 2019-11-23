@@ -1,6 +1,7 @@
 package maven.arduino.waterFlowSensor.mongoDB;
 
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.mongodb.MongoClient;
@@ -18,6 +19,9 @@ public class MongoDBConnection {
 	private MongoDatabase database;
 	
 	private MongoCollection<Document> collection;
+	
+	@Value("${CONNECTION_STRING}")
+	private String connectionString;
 	
 	public MongoDBConnection() {
 	}
@@ -47,7 +51,7 @@ public class MongoDBConnection {
 	}	
 	
 	public void openConnection() {
-		MongoClientURI uri = new MongoClientURI("mongodb://admin:admin@cluster0-shard-00-00-qkxa6.mongodb.net:27017,cluster0-shard-00-01-qkxa6.mongodb.net:27017,cluster0-shard-00-02-qkxa6.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority");
+		MongoClientURI uri = new MongoClientURI(connectionString);
 		this.mongoClient = new MongoClient(uri);
 		this.database = mongoClient.getDatabase("waterFlowDB");
 		this.collection = database.getCollection("waterFlowCollection");
