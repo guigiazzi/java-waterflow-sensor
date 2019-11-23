@@ -45,16 +45,15 @@ void loop()
   delay (1000); //Aguarda 1 segundo
   //cli();      //Desabilita interrupção
   
-  vazao = contaPulso / 5.5; //Converte para L/min
+  vazao = contaPulso / 4.5; //Converte para L/min
   media=media+vazao; //Soma a vazão para o calculo da media
   i++;
   
-  if(i==10)
+  if(i==10) //!!! o limite do blynk eh de 23 segundos, depois disso, pede a conexao !!!
   {
     media = media/10; //Tira a media dividindo por 60
     /*media = 0; //Zera a variável media para uma nova contagem
     i=0; //Zera a variável i para uma nova contagem*/
-    
     Blynk.run();
     timer.run(); // running timer every minute
   }
