@@ -1,4 +1,4 @@
-package maven.arduino.waterFlowSensor.domain;
+package com.java.waterFlowSensor.domain;
 
 import org.springframework.stereotype.Component;
 

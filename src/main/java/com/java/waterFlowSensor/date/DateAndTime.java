@@ -1,4 +1,4 @@
-package maven.arduino.waterFlowSensor.date;
+package com.java.waterFlowSensor.date;
 
 import java.sql.Timestamp;
 import java.util.Date;

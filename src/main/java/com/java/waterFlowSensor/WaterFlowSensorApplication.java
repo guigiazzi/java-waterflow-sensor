@@ -1,4 +1,4 @@
-package maven.arduino.waterFlowSensor;
+package com.java.waterFlowSensor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

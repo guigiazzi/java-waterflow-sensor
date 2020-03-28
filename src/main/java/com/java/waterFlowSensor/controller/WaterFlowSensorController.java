@@ -1,4 +1,4 @@
-package maven.arduino.waterFlowSensor.controller;
+package com.java.waterFlowSensor.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import maven.arduino.waterFlowSensor.date.DateAndTime;
-import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
-import maven.arduino.waterFlowSensor.mongoDB.MongoDBConnection;
+import com.java.waterFlowSensor.date.DateAndTime;
+import com.java.waterFlowSensor.domain.WaterFlowSensorDomain;
+import com.java.waterFlowSensor.mongoDB.MongoDBConnection;
 
 @RestController
 public class WaterFlowSensorController {

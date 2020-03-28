@@ -1,15 +1,14 @@
-package maven.arduino.waterFlowSensor.mongoDB;
+package com.java.waterFlowSensor.mongoDB;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.java.waterFlowSensor.domain.WaterFlowSensorDomain;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-import maven.arduino.waterFlowSensor.domain.WaterFlowSensorDomain;
 
 @Repository
 public class MongoDBConnection {
