@@ -36,7 +36,7 @@ public class UserController {
 		try {
 			userService.login(username, password);
 		} catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.FORBIDDEN);
 		}
 		
 		return new ResponseEntity<>(HttpStatus.OK);
