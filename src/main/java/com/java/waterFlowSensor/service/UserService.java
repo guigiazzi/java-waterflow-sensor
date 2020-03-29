@@ -6,20 +6,22 @@ import org.springframework.stereotype.Service;
 import com.java.waterFlowSensor.DAO.UserDAO;
 import com.java.waterFlowSensor.DTO.UserDTO;
 
+import lombok.extern.java.Log;
+
+@Log
 @Service
 public class UserService {
 	
 	@Autowired
 	UserDAO userDao;
 	
-	public String registrer(UserDTO user) {
+	public void registrer(UserDTO user) {
 		if(userDao.existsByUsername(user.getUsername())) {
 			throw new IllegalArgumentException("Usuário já cadastrado");
 		}
 		
+		log.info("Inserindo usuário no MongoDB");
 		userDao.insert(user);
-		
-		return "Cadastro realizado com sucesso!";
 	}
 	
 	public void login(String username, String password) {
