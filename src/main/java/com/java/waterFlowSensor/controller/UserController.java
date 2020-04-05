@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import lombok.extern.java.Log;
 
 @Log
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
 	@Autowired
@@ -30,9 +32,9 @@ public class UserController {
 	@Autowired
 	Gson gson;
 
-	@PostMapping(value = "/registrer")
+	@PostMapping(value = "/register")
 	public ResponseEntity<String> registrer(@Valid @RequestBody UserDTO user) {
-		log.info("Requisição para cadastro recebida: " + gson.toJson(user));
+		log.info("\n\n--- Requisição para cadastro recebida: " + gson.toJson(user));
 
 		userService.registrer(user);
 
@@ -43,7 +45,7 @@ public class UserController {
 
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> registrer(@Valid @RequestHeader String username, @Valid @RequestHeader String password) {
-		log.info("Requisição para login recebida. Usuário: " + username + ", senha: " + password);
+		log.info("\n\n--- Requisição para login recebida. Usuário: " + username + ", senha: " + password);
 
 		userService.login(username, password);
 

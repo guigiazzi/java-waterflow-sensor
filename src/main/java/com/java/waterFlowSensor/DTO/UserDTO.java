@@ -23,13 +23,15 @@ public class UserDTO {
 	@NotBlank
 	private String password;
 	@NotBlank
-	private String email;
+	private String name;
 	@NotBlank
-	private String phone;
+	private String email;
+	@NotNull
+	private GenderEnum sex;
 	@NotNull
 	private RegionEnum region;
-	@NotNull
-	private GenderEnum gender;
+	@NotBlank
+	private String phoneNumber;
 	@NotBlank
 	private String address;
 
