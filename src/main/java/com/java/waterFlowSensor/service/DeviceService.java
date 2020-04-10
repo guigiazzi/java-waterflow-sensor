@@ -20,10 +20,6 @@ public class DeviceService {
 	public List<DeviceDTO> getDevices(String username) {
 		log.info("Buscando dispositivos para o usuário " + username);
 		
-		if(!deviceDAO.existsByUsername(username)) {
-			throw new IllegalArgumentException("Usuário não existente");
-		}
-		
 		return deviceDAO.findAllByUsername(username);
 	}
 	

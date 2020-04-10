@@ -20,10 +20,6 @@ public class ViewCardService {
 	public List<ViewCardDTO> getCards(String username) {
 		log.info("Buscando cards para visões do usuário " + username);
 		
-		if(!viewCardDAO.existsByUsername(username)) {
-			throw new IllegalArgumentException("Usuário não existente");
-		}
-		
 		return viewCardDAO.findAllByUsername(username);
 	}
 	
