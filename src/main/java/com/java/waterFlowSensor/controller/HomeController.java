@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.java.waterFlowSensor.DTO.ChartDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.ViewCardDTO;
+import com.java.waterFlowSensor.service.ChartService;
 import com.java.waterFlowSensor.service.DeviceService;
 import com.java.waterFlowSensor.service.ViewCardService;
 
@@ -28,9 +30,12 @@ public class HomeController {
 
 	@Autowired
 	ViewCardService viewCardService;
-	
+
 	@Autowired
 	DeviceService deviceService;
+	
+	@Autowired
+	ChartService chartService;
 
 	@Autowired
 	Gson gson;
@@ -45,7 +50,7 @@ public class HomeController {
 
 		return new ResponseEntity<List<ViewCardDTO>>(cards, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/getDevices")
 	public ResponseEntity<List<DeviceDTO>> getDevices(@Valid @RequestHeader String username) {
 		log.info("\n\n--- Requisição para recuperar dispositivos recebida. Usuário: " + username);
@@ -55,6 +60,19 @@ public class HomeController {
 		log.info("Retorno da requisição de recuperar dispositivos: " + gson.toJson(devices));
 
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/getChart")
+	public ResponseEntity<ChartDTO> getChart(@Valid @RequestHeader String chartId,
+			@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + " usuário: "
+				+ username);
+
+		ChartDTO chart = chartService.getChart(chartId, username);
+
+		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chart));
+
+		return new ResponseEntity<ChartDTO>(chart, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
