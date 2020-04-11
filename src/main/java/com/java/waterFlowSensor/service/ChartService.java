@@ -15,11 +15,7 @@ public class ChartService {
 	@Autowired
 	ChartDAO chartDAO;
 	
-	public ChartDTO getChart(String chartId, String username) {
-		if(!chartDAO.existsByChartIdAndUsername(chartId, username)) {
-			throw new IllegalArgumentException("Gráfico não encontrado");
-		}
-		
+	public ChartDTO getChart(String chartId, String username) {		
 		ChartDTO chart = chartDAO.findByChartIdAndUsername(chartId, username);
 		
 		return chart;
