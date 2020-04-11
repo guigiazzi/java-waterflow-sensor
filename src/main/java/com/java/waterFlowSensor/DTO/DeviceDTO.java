@@ -17,6 +17,12 @@ public class DeviceDTO {
 	@NotBlank
 	private String description;
 	@NotBlank
+	private String deviceId;
+	@NotBlank
 	private String username;
+	@NotBlank
+	private String timestamp;
+	@NotBlank
+	private String flowRate;
 
 }

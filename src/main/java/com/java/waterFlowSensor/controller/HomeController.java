@@ -33,7 +33,7 @@ public class HomeController {
 
 	@Autowired
 	DeviceService deviceService;
-	
+
 	@Autowired
 	ChartService chartService;
 
@@ -65,14 +65,24 @@ public class HomeController {
 	@GetMapping(value = "/getChart")
 	public ResponseEntity<ChartDTO> getChart(@Valid @RequestHeader String chartId,
 			@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + " usuário: "
-				+ username);
+		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + " usuário: " + username);
 
 		ChartDTO chart = chartService.getChart(chartId, username);
 
 		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chart));
 
 		return new ResponseEntity<ChartDTO>(chart, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/getDeviceDetails")
+	public ResponseEntity<DeviceDTO> getDeviceDetails(@Valid @RequestHeader String deviceId) {
+		log.info("\n\n--- Requisição para recuperar detalhes do dispositivo recebida. DeviceId: " + deviceId);
+
+		DeviceDTO device = deviceService.getDeviceDetails(deviceId);
+
+		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(device));
+
+		return new ResponseEntity<DeviceDTO>(device, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)

@@ -23,4 +23,9 @@ public class DeviceService {
 		return deviceDAO.findAllByUsername(username);
 	}
 	
+	public DeviceDTO getDeviceDetails(String deviceId) {
+		log.info("Buscando dispositivo " + deviceId);
+		
+		return deviceDAO.findByDeviceId(deviceId);
+	}
 }
