@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.java.waterFlowSensor.DTO.ChartDTO;
+import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
-import com.java.waterFlowSensor.DTO.ViewCardDTO;
-import com.java.waterFlowSensor.service.ChartService;
-import com.java.waterFlowSensor.service.DeviceService;
-import com.java.waterFlowSensor.service.ViewCardService;
+import com.java.waterFlowSensor.service.HomeService;
 
 import lombok.extern.java.Log;
 
@@ -27,58 +24,41 @@ import lombok.extern.java.Log;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class HomeController {
-
+	
 	@Autowired
-	ViewCardService viewCardService;
-
-	@Autowired
-	DeviceService deviceService;
-
-	@Autowired
-	ChartService chartService;
+	HomeService homeService;
 
 	@Autowired
 	Gson gson;
 
-	@GetMapping(value = "/getCards")
-	public ResponseEntity<List<ViewCardDTO>> getCards(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar cards das visões recebida. Usuário: " + username);
+	@GetMapping(value = "/getChartViewCards")
+	public ResponseEntity<List<ChartViewDTO>> getChartViewCards(@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar cards dos gráficos das visões. Usuário: " + username);
 
-		List<ViewCardDTO> cards = viewCardService.getCards(username);
+		List<ChartViewDTO> chartViewCards = homeService.getChartViewCards(username);
 
-		log.info("Retorno da requisição de recuperar cards das visões: " + gson.toJson(cards));
+		log.info("Retorno da requisição de recuperar cards dos gráficos das visões: " + gson.toJson(chartViewCards));
 
-		return new ResponseEntity<List<ViewCardDTO>>(cards, HttpStatus.OK);
+		return new ResponseEntity<List<ChartViewDTO>>(chartViewCards, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getDevices")
-	public ResponseEntity<List<DeviceDTO>> getDevices(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar dispositivos recebida. Usuário: " + username);
+	@GetMapping(value = "/getDeviceCards")
+	public ResponseEntity<List<DeviceDTO>> getDeviceCards(@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar cards dos dispositivos recebida. Usuário: " + username);
 
-		List<DeviceDTO> devices = deviceService.getDevices(username);
+		List<DeviceDTO> devices = homeService.getDeviceCards(username);
 
-		log.info("Retorno da requisição de recuperar dispositivos: " + gson.toJson(devices));
+		log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
 
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getChart")
-	public ResponseEntity<ChartDTO> getChart(@Valid @RequestHeader String chartId,
-			@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + " usuário: " + username);
-
-		ChartDTO chart = chartService.getChart(chartId, username);
-
-		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chart));
-
-		return new ResponseEntity<ChartDTO>(chart, HttpStatus.OK);
-	}
 
 	@GetMapping(value = "/getDeviceDetails")
 	public ResponseEntity<DeviceDTO> getDeviceDetails(@Valid @RequestHeader String deviceId) {
 		log.info("\n\n--- Requisição para recuperar detalhes do dispositivo recebida. DeviceId: " + deviceId);
 
-		DeviceDTO device = deviceService.getDeviceDetails(deviceId);
+		DeviceDTO device = homeService.getDeviceDetails(deviceId);
 
 		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(device));
 

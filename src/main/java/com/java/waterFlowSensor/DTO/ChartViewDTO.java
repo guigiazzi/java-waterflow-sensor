@@ -12,8 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@Document(collection = "ChartCollection")
-public class ChartDTO {
+@Document(collection = "ChartViewCollection")
+public class ChartViewDTO {
 
 //	@Transient
 //    public static final String chartId = "users_sequence";
@@ -25,5 +25,7 @@ public class ChartDTO {
 	private String title;
 	@NotBlank
 	private String description;
+	@NotBlank
+	private String type;
 
 }
