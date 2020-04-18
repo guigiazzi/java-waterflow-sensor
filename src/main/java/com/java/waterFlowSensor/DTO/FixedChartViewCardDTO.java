@@ -1,7 +1,5 @@
 package com.java.waterFlowSensor.DTO;
 
-import java.util.List;
-
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,20 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@Document(collection = "ChartViewCollection")
-public class ChartViewDTO {
+@Document(collection = "FixedChartViewCardCollection")
+public class FixedChartViewCardDTO {
 
-	@NotBlank
-	private String chartId;
-	@NotBlank
-	private String username;
-	@NotBlank
-	private String title;
 	@NotBlank
 	private String description;
 	@NotBlank
 	private String type;
 	@NotBlank
-	private List<DataPointDTO> dataPoints;
+	private String chartId;
 
 }

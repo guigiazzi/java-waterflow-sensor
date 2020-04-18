@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.java.waterFlowSensor.DAO.ChartViewDAO;
 import com.java.waterFlowSensor.DAO.DeviceDAO;
+import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
+import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 
 import lombok.extern.java.Log;
 
@@ -20,12 +22,15 @@ public class HomeService {
 	ChartViewDAO chartViewDAO;
 	
 	@Autowired
+	FixedChartViewCardDAO fixedChartViewCardDAO;
+	
+	@Autowired
 	DeviceDAO deviceDAO;
 	
-	public List<ChartViewDTO> getChartViewCards(String username) {
-		log.info("Buscando cards para gráficos das visões do usuário " + username);
+	public List<FixedChartViewCardDTO> getFixedChartViewCards() {
+		log.info("Buscando cards para gráficos das visões");
 		
-		return chartViewDAO.findAllByUsername(username);
+		return fixedChartViewCardDAO.findAll();
 	}
 		
 	public List<DeviceDTO> getDeviceCards(String username) {
@@ -38,5 +43,11 @@ public class HomeService {
 		log.info("Buscando detalhes do dispositivo " + deviceId);
 		
 		return deviceDAO.findByDeviceId(deviceId);
+	}
+	
+	public ChartViewDTO getChartView(String chartId, String username) {
+		log.info("Buscando detalhes do gráfico");
+		
+		return chartViewDAO.findByChartIdAndUsername(chartId, username);
 	}
 }
