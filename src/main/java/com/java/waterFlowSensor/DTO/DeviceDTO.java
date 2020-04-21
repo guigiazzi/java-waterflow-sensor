@@ -25,6 +25,6 @@ public class DeviceDTO {
 	@NotBlank
 	private String timestamp;
 	@NotBlank
-	private String flowRate;
+	private double flowRate;
 
 }

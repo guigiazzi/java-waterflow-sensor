@@ -15,7 +15,7 @@ public class DataPointDTO {
 	private double y;
 	@NotBlank
 	private String label;
-	@NotBlank
+	@NotBlank	
 	private String name;
 //	@NotBlank
 //	private String indexLabel;

@@ -13,7 +13,11 @@ public interface DeviceDAO extends MongoRepository<DeviceDTO, String>{
 	boolean existsByUsername(String username);
 	
 	List<DeviceDTO> findAllByUsername(String username);
-	
-	DeviceDTO findByDeviceId(String deviceId);
 		
+	DeviceDTO findByDeviceId(String deviceId);
+	
+	DeviceDTO findByDescription(String description);
+	
+	List<DeviceDTO> findAllByUsernameAndDescription(String username, String description);
+			
 }

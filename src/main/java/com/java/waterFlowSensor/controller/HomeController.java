@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 import com.java.waterFlowSensor.service.HomeService;
@@ -44,38 +43,40 @@ public class HomeController {
 	}
 
 	@GetMapping(value = "/getDeviceCards")
-	public ResponseEntity<List<DeviceDTO>> getDeviceCards(@Valid @RequestHeader String username) {
+	public ResponseEntity<List<String>> getDeviceCards(@Valid @RequestHeader String username) {
 		log.info("\n\n--- Requisição para recuperar cards dos dispositivos recebida. Usuário: " + username);
 
-		List<DeviceDTO> devices = homeService.getDeviceCards(username);
+		List<String> devices = homeService.getDeviceCards(username);
 
 		log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
 
-		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
+		return new ResponseEntity<List<String>>(devices, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getDeviceDetails")
-	public ResponseEntity<DeviceDTO> getDeviceDetails(@Valid @RequestHeader String deviceId) {
-		log.info("\n\n--- Requisição para recuperar detalhes do dispositivo recebida. DeviceId: " + deviceId);
+	public ResponseEntity<DeviceDTO> getDeviceDetails(@Valid @RequestHeader String username,
+			@Valid @RequestHeader String description) {
+		log.info("\n\n--- Requisição para recuperar detalhes do dispositivo recebida. Username: " + username
+				+ ". Description: " + description);
 
-		DeviceDTO device = homeService.getDeviceDetails(deviceId);
+		DeviceDTO device = homeService.getDeviceDetails(username, description);
 
 		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(device));
 
 		return new ResponseEntity<DeviceDTO>(device, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getChartView")
-	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
-			@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
-
-		ChartViewDTO chartView = homeService.getChartView(chartId, username);
-
-		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(chartView));
-
-		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
-	}
+//	@GetMapping(value = "/getChartView")
+//	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
+//			@Valid @RequestHeader String username) {
+//		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
+//
+//		ChartViewDTO chartView = homeService.getChartView(chartId, username);
+//
+//		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(chartView));
+//
+//		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
+//	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentExceptions(IllegalArgumentException ex) {
