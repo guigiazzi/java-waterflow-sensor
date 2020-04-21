@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 import com.java.waterFlowSensor.service.HomeService;
@@ -66,17 +67,18 @@ public class HomeController {
 		return new ResponseEntity<DeviceDTO>(device, HttpStatus.OK);
 	}
 
-//	@GetMapping(value = "/getChartView")
-//	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
-//			@Valid @RequestHeader String username) {
-//		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
-//
-//		ChartViewDTO chartView = homeService.getChartView(chartId, username);
-//
-//		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(chartView));
-//
-//		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
-//	}
+	@GetMapping(value = "/getChartView")
+	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String type,
+			@Valid @RequestHeader String title, @Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar gráfico recebida. Type: " + type + ". Title: " + title
+				+ ". Usuário: " + username);
+
+		ChartViewDTO chartView = homeService.getChartView(type, title, username);
+
+		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
+
+		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
+	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentExceptions(IllegalArgumentException ex) {

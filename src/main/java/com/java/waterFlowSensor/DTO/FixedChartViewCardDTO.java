@@ -15,7 +15,7 @@ import lombok.Setter;
 public class FixedChartViewCardDTO {
 
 	@NotBlank
-	private String description;
+	private String title;
 	@NotBlank
 	private String type;
 	@NotBlank

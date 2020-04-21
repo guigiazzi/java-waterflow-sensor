@@ -13,7 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Document(collection = "DeviceCollection")
 public class DeviceDTO {
-
+	
+	private String _id;
 	@NotBlank
 	private String title;
 	@NotBlank
