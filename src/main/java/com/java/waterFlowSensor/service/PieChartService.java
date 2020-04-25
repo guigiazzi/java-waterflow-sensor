@@ -15,24 +15,24 @@ import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 
-public class ColumnChartService {
+public class PieChartService {
 
 	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
-		Aggregation agg = Aggregation.newAggregation( // group by weekday, average all flow rates
-				match(Criteria.where("username").is(username)), 
-				group("weekDay").avg("flowRate").as("flowRate"));
+		Aggregation agg = Aggregation.newAggregation( // group by description, average all flow rates
+				match(Criteria.where("username").is(username)),
+				group("description").sum("flowRate").as("flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
-		List<DeviceDTO> weekDayAndFlowRateAvgList = results.getMappedResults();
+		List<DeviceDTO> descriptionAndFlowRateSumList = results.getMappedResults();
 
-		for (DeviceDTO weekDayAndFlowRateAvg : weekDayAndFlowRateAvgList) {
-			String weekDay = weekDayAndFlowRateAvg.get_id();
-			double flowRateAvg = weekDayAndFlowRateAvg.getFlowRate();
+		for (DeviceDTO descriptionAndFlowRateSum : descriptionAndFlowRateSumList) {
+			String description = descriptionAndFlowRateSum.get_id();
+			double flowRateSum = descriptionAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();
-			dataPoint.setY(flowRateAvg);
-			dataPoint.setLabel(weekDay);
+			dataPoint.setY(flowRateSum);
+			dataPoint.setLegendText(description);
 			dataPoints.add(dataPoint);
 		}
 

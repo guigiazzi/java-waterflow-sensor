@@ -89,6 +89,9 @@ public class HomeService {
 		} else if(type.equals("line")) {
 			LineChartService lineChart = new LineChartService();
 			chartView = lineChart.createChart(type, title, username, mongoTemplate);
+		} else if(type.equals("pie")) {
+			PieChartService pieChart = new PieChartService();
+			chartView = pieChart.createChart(type, title, username, mongoTemplate);
 		}
 		
 		return chartView;
