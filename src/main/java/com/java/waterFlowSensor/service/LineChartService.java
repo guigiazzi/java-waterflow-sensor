@@ -25,73 +25,54 @@ public class LineChartService {
 
 	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
-		
+
 		// gets past week values
 		Date date = new Date();
-	    Calendar c = Calendar.getInstance();
-	    c.setTime(date);
-	    int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
-	    c.add(Calendar.DATE, -i - 7);
-	    Date start = c.getTime();
-	    c.add(Calendar.DATE, 6);
-	    Date end = c.getTime();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+		c.add(Calendar.DATE, -i - 7);
+		Date start = c.getTime();
+		c.add(Calendar.DATE, 6);
+		Date end = c.getTime();
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String formatStart = dateFormat.format(start);
 		String formatEnd = dateFormat.format(end);
-
+		System.out.println("Start: " + formatStart + ", end: " + formatEnd);
 		Aggregation agg = Aggregation.newAggregation( // group by weekDay, sum all flow rates
-				match(Criteria.where("username").is(username)), 
-				match(Criteria.where("timestamp").gte(formatStart)), // gets range of past week 
-				match(Criteria.where("timestamp").lte(formatEnd)), 
-				group("weekDay").sum("flowRate").as("flowRate"));
+				// gets range of past week
+				match(Criteria.where("username").is(username)), match(Criteria.where("timestamp").gte(formatStart)),
+				match(Criteria.where("timestamp").lte(formatEnd)), group("weekDay").sum("flowRate").as("flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> queryList = results.getMappedResults();
 		List<DeviceDTO> weekDayAndFlowRateSumList = new ArrayList<DeviceDTO>();
-		List<WeekDayEnum> weekDays = Arrays.asList(WeekDayEnum.values());		
-		
-		List<String> weekDaysFormat = new ArrayList<String>();
-		for(WeekDayEnum weekDay : weekDays) {
-			weekDaysFormat.add(weekDay.name());
-		}
-		System.out.println(weekDaysFormat);
+		List<WeekDayEnum> weekDays = Arrays.asList(WeekDayEnum.values());
 
-//		for(int a = 0; a < queryList.size(); a++) {
-//			
-//		for() {
-//			queryListFormat.add
-//		}
-		
-		int a = 0;
-		for(WeekDayEnum weekDayEnum : weekDays) { // finds missing days on query result, then adds a 0 flow rate to them
-			String weekDay = weekDayEnum.name();
-			DeviceDTO singleResult = queryList.get(a);
+		List<String> weekDaysFormatList = new ArrayList<String>();
+		for (WeekDayEnum weekDay : weekDays) {
+			weekDaysFormatList.add(weekDay.name());
+		}
+
+		List<String> queryDaysFormatList = new ArrayList<String>();
+		for (DeviceDTO queryDay : queryList) {
+			queryDaysFormatList.add(queryDay.get_id());
+		}
+
+		for (int a = 0; a < weekDaysFormatList.size(); a++) { 
+			// finds missing days on query result, then adds a 0 flow rate to them
 			DeviceDTO weekDayAndFlowRateSum = new DeviceDTO();
-			if(queryList.contains(weekDay)) {
-				weekDayAndFlowRateSum.set_id(singleResult.get_id());
-				weekDayAndFlowRateSum.setFlowRate(singleResult.getFlowRate());
+			if (queryDaysFormatList.contains(weekDaysFormatList.get(a))) {
+				weekDayAndFlowRateSum.set_id(queryList.get(a).get_id());
+				weekDayAndFlowRateSum.setFlowRate(queryList.get(a).getFlowRate());
 			} else {
-				weekDayAndFlowRateSum.set_id(weekDaysFormat.get(a));
+				weekDayAndFlowRateSum.set_id(weekDaysFormatList.get(a));
 				weekDayAndFlowRateSum.setFlowRate(0);
 			}
 			weekDayAndFlowRateSumList.add(weekDayAndFlowRateSum);
-			a++;
-		
-//			for(int a = 0; a < queryList.size(); a++) {
-//				String queryWeekDay = queryList.get(a).get_id();
-//				DeviceDTO weekDayAndFlowRateSum = new DeviceDTO();
-//				if(queryWeekDay.equals(weekDay)) {
-//					weekDayAndFlowRateSum.set_id(queryList.get(a).get_id());
-//					weekDayAndFlowRateSum.setFlowRate(queryList.get(a).getFlowRate());
-//				} else {
-//					weekDayAndFlowRateSum.set_id(weekDay);
-//					weekDayAndFlowRateSum.setFlowRate(0);
-//				}
-//				weekDayAndFlowRateSumList.add(weekDayAndFlowRateSum);
-//			}
 		}
-		
+
 		for (DeviceDTO weekDayAndFlowRateSum : weekDayAndFlowRateSumList) {
 			String weekDay = weekDayAndFlowRateSum.get_id();
 			double flowRateSum = weekDayAndFlowRateSum.getFlowRate();
