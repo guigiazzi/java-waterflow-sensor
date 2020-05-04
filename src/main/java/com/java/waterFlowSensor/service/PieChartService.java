@@ -2,10 +2,12 @@ package com.java.waterFlowSensor.service;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -22,7 +24,8 @@ public class PieChartService {
 
 		Aggregation agg = Aggregation.newAggregation( // group by description, average all flow rates
 				match(Criteria.where("username").is(username)),
-				group("description").sum("flowRate").as("flowRate"));
+				group("description").sum("flowRate").as("flowRate"),
+				sort(Sort.Direction.ASC, "flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> descriptionAndFlowRateSumList = results.getMappedResults();
 

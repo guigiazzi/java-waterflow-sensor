@@ -5,7 +5,6 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,12 +18,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
-import com.java.waterFlowSensor.enums.WeekDayEnum;
+import com.java.waterFlowSensor.util.WeekDaysUtil;
 
 public class LineChartService {
+	
+	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 
 	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
-		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
 		// gets past week values
 		Date date = new Date();
@@ -48,57 +48,23 @@ public class LineChartService {
 				group("weekDay").sum("flowRate").as("flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> queryList = results.getMappedResults();
-		List<DeviceDTO> weekDayAndFlowRateSumList = new ArrayList<DeviceDTO>();
-		List<WeekDayEnum> weekDays = Arrays.asList(WeekDayEnum.values());
-		List<String> weekDaysFormatList = new ArrayList<String>();
-		for (WeekDayEnum weekDay : weekDays) {
-			weekDaysFormatList.add(weekDay.name());
-		}
 
 		List<String> queryDaysFormatList = new ArrayList<String>();
 		for (DeviceDTO queryDay : queryList) {
 			queryDaysFormatList.add(queryDay.get_id());
 		}
-
-		int b = 0;
-		for (int a = 0; a < weekDaysFormatList.size(); a++) { 
-			// finds missing days on query result, then adds a 0 flow rate to them
-			DeviceDTO weekDayAndFlowRateSum = new DeviceDTO();
-			if (queryDaysFormatList.contains(weekDaysFormatList.get(a))) {
-				weekDayAndFlowRateSum.set_id(queryList.get(b).get_id());
-				weekDayAndFlowRateSum.setFlowRate(queryList.get(b).getFlowRate());
-				b++;
-			} else {
-				weekDayAndFlowRateSum.set_id(weekDaysFormatList.get(a));
-				weekDayAndFlowRateSum.setFlowRate(0);
-			}
-			weekDayAndFlowRateSumList.add(weekDayAndFlowRateSum);
-		}
-
-		for (DeviceDTO weekDayAndFlowRateSum : weekDayAndFlowRateSumList) {
-			String weekDay = weekDayAndFlowRateSum.get_id();
-			double flowRateSum = weekDayAndFlowRateSum.getFlowRate();
-
-			DataPointDTO dataPoint = new DataPointDTO();
-			dataPoint.setY(flowRateSum);
-			dataPoint.setLabel(weekDay);
-			dataPoints.add(dataPoint);
-		}
 		
-		dataPoints = this.sortDataPoints(dataPoints, weekDaysFormatList);
+		List<DeviceDTO> weekDayAndFlowRateSumList = new ArrayList<DeviceDTO>();		
+
+		weekDayAndFlowRateSumList = weekDaysUtil.fillMissingDays(queryDaysFormatList, queryList);
+		
+		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
+		
+		dataPoints = weekDaysUtil.setDataPoints(weekDayAndFlowRateSumList);
+
+		dataPoints = weekDaysUtil.sortDataPoints(dataPoints);
 
 		return new ChartViewDTO(title, type, dataPoints);
-	}
-		
-	// formats the list to respect the order of the week days
-	private List<DataPointDTO> sortDataPoints(List<DataPointDTO> dataPoints, List<String> weekDaysFormatList){
-		List<DataPointDTO> sortedDataPoints = Arrays.asList(null, null, null, null, null, null, null);
-		for(DataPointDTO dataPoint : dataPoints) {
-			int idx = weekDaysFormatList.indexOf(dataPoint.getLabel());
-			sortedDataPoints.set(idx, dataPoint);
-		}
-		
-		return sortedDataPoints;
 	}
 
 }

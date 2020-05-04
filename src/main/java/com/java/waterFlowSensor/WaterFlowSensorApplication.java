@@ -24,5 +24,6 @@ public class WaterFlowSensorApplication {
 	public ChartViewDTO chartView() {
 		return new ChartViewDTO();
 	}
+	
 }
 

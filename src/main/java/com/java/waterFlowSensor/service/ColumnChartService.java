@@ -14,8 +14,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
+import com.java.waterFlowSensor.util.WeekDaysUtil;
 
 public class ColumnChartService {
+	
+	WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 
 	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
@@ -24,18 +27,20 @@ public class ColumnChartService {
 				match(Criteria.where("username").is(username)), 
 				group("weekDay").avg("flowRate").as("flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
-		List<DeviceDTO> weekDayAndFlowRateAvgList = results.getMappedResults();
-
-		for (DeviceDTO weekDayAndFlowRateAvg : weekDayAndFlowRateAvgList) {
-			String weekDay = weekDayAndFlowRateAvg.get_id();
-			double flowRateAvg = weekDayAndFlowRateAvg.getFlowRate();
-
-			DataPointDTO dataPoint = new DataPointDTO();
-			dataPoint.setY(flowRateAvg);
-			dataPoint.setLabel(weekDay);
-			dataPoints.add(dataPoint);
+		List<DeviceDTO> queryList = results.getMappedResults();
+		
+		List<String> queryDaysFormatList = new ArrayList<String>();
+		for (DeviceDTO queryDay : queryList) {
+			queryDaysFormatList.add(queryDay.get_id());
 		}
+		
+		List<DeviceDTO> weekDayAndFlowRateAvgList = results.getMappedResults();
+		weekDayAndFlowRateAvgList = weekDaysUtil.fillMissingDays(queryDaysFormatList, queryList);
+		
+		dataPoints = weekDaysUtil.setDataPoints(weekDayAndFlowRateAvgList);
 
+		dataPoints = weekDaysUtil.sortDataPoints(dataPoints);
+		
 		return new ChartViewDTO(title, type, dataPoints);
 	}
 
