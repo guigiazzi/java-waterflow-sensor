@@ -63,6 +63,8 @@ public class LineChartService {
 		dataPoints = weekDaysUtil.setDataPoints(weekDayAndFlowRateSumList);
 
 		dataPoints = weekDaysUtil.sortDataPoints(dataPoints);
+		
+		dataPoints = weekDaysUtil.formatWeekDays(dataPoints);
 
 		return new ChartViewDTO(title, type, dataPoints);
 	}

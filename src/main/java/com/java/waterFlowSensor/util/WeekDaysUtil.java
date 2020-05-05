@@ -15,7 +15,7 @@ public class WeekDaysUtil {
 	public WeekDaysUtil() {
 		List<WeekDayEnum> weekDays = Arrays.asList(WeekDayEnum.values());
 		for (WeekDayEnum weekDayEnum : weekDays) {
-			this.weekDaysFormatList.add(weekDayEnum.weekDay);
+			this.weekDaysFormatList.add(weekDayEnum.name());
 		}
 	}
 
@@ -28,6 +28,19 @@ public class WeekDaysUtil {
 		}
 
 		return sortedDataPoints;
+	}
+	
+	// formats weekday names, replacing Enum type for its value
+	public List<DataPointDTO> formatWeekDays(List<DataPointDTO> dataPoints) {
+		int a = 0;
+		for(WeekDayEnum weekDayEnum : WeekDayEnum.values()) {
+			DataPointDTO dataPoint = dataPoints.get(a);
+			dataPoint.setLabel(weekDayEnum.weekDay);
+			dataPoints.set(a, dataPoint);
+			a++;
+		}
+
+		return dataPoints;
 	}
 
 	// sets data point values
