@@ -14,8 +14,8 @@ public class WeekDaysUtil {
 	
 	public WeekDaysUtil() {
 		List<WeekDayEnum> weekDays = Arrays.asList(WeekDayEnum.values());
-		for (WeekDayEnum weekDay : weekDays) {
-			this.weekDaysFormatList.add(weekDay.name());
+		for (WeekDayEnum weekDayEnum : weekDays) {
+			this.weekDaysFormatList.add(weekDayEnum.weekDay);
 		}
 	}
 
