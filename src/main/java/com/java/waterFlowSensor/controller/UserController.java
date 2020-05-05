@@ -27,10 +27,10 @@ import lombok.extern.java.Log;
 public class UserController {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@Autowired
-	Gson gson;
+	private Gson gson;
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<String> registrer(@Valid @RequestBody UserDTO user) {

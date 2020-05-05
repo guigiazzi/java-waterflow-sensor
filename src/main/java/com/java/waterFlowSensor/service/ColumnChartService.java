@@ -18,7 +18,7 @@ import com.java.waterFlowSensor.util.WeekDaysUtil;
 
 public class ColumnChartService {
 	
-	WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
+	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 
 	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();

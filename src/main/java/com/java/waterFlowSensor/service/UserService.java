@@ -13,7 +13,7 @@ import lombok.extern.java.Log;
 public class UserService {
 	
 	@Autowired
-	UserDAO userDao;
+	private UserDAO userDao;
 	
 	public void registrer(UserDTO user) {
 		if(userDao.existsByUsername(user.getUsername())) {

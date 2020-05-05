@@ -27,10 +27,10 @@ import lombok.extern.java.Log;
 public class HomeController {
 
 	@Autowired
-	HomeService homeService;
+	private HomeService homeService;
 
 	@Autowired
-	Gson gson;
+	private Gson gson;
 
 	@GetMapping(value = "/getFixedChartViewCards")
 	public ResponseEntity<List<FixedChartViewCardDTO>> getChartViewCards() {

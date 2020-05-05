@@ -24,16 +24,16 @@ public class HomeService {
 //	ChartViewDAO chartViewDAO;
 
 	@Autowired
-	FixedChartViewCardDAO fixedChartViewCardDAO;
+	private FixedChartViewCardDAO fixedChartViewCardDAO;
 
 	@Autowired
-	DeviceDAO deviceDAO;
+	private DeviceDAO deviceDAO;
 
 	@Autowired
-	MongoTemplate mongoTemplate;
+	private MongoTemplate mongoTemplate;
 
 	@Autowired
-	ChartViewDTO chartView;
+	private ChartViewDTO chartView;
 
 	public List<FixedChartViewCardDTO> getFixedChartViewCards() {
 		log.info("Buscando cards para gráficos das visões");
@@ -95,6 +95,5 @@ public class HomeService {
 		}
 		
 		return chartView;
-		
 	}
 }
