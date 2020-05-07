@@ -36,6 +36,7 @@ public class PieChartService {
 			DataPointDTO dataPoint = new DataPointDTO();
 			dataPoint.setY(flowRateSum);
 			dataPoint.setLegendText(description);
+			dataPoint.setName(description);
 			dataPoints.add(dataPoint);
 		}
 

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
+import com.java.waterFlowSensor.DTO.UserDTO;
 import com.java.waterFlowSensor.service.HomeService;
 
 import lombok.extern.java.Log;
@@ -31,6 +32,17 @@ public class HomeController {
 
 	@Autowired
 	private Gson gson;
+	
+	@GetMapping(value = "/getUserData")
+	public ResponseEntity<UserDTO> getUserData(@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar dados do usuário");
+
+		UserDTO user = homeService.getUserData(username);
+
+		log.info("Retorno da requisição de recuperar dados do usuário: " + gson.toJson(user));
+
+		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
+	}
 
 	@GetMapping(value = "/getFixedChartViewCards")
 	public ResponseEntity<List<FixedChartViewCardDTO>> getChartViewCards() {

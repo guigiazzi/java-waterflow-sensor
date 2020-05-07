@@ -12,4 +12,6 @@ public interface UserDAO extends MongoRepository<UserDTO, String>{
 	
 	boolean existsByUsernameAndPassword(String username, String password);
 	
+	UserDTO findByUsername(String username);
+	
 }

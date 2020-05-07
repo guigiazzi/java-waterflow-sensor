@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
+import com.java.waterFlowSensor.DAO.UserDAO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
+import com.java.waterFlowSensor.DTO.UserDTO;
 
 import lombok.extern.java.Log;
 
@@ -28,12 +30,21 @@ public class HomeService {
 
 	@Autowired
 	private DeviceDAO deviceDAO;
+	
+	@Autowired
+	private UserDAO userDAO;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Autowired
 	private ChartViewDTO chartView;
+	
+	public UserDTO getUserData(String username) {
+		log.info("Buscando dados do usuário " + username);
+		
+		return userDAO.findByUsername(username);
+	}
 
 	public List<FixedChartViewCardDTO> getFixedChartViewCards() {
 		log.info("Buscando cards para gráficos das visões");
