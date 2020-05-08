@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.util.WeekDaysUtil;
@@ -20,7 +19,7 @@ public class ColumnChartService {
 	
 	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 
-	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
+	public List<DataPointDTO> createChart(String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
 		Aggregation agg = Aggregation.newAggregation( // group by weekday, average all flow rates
@@ -43,7 +42,10 @@ public class ColumnChartService {
 		
 		dataPoints = weekDaysUtil.formatWeekDays(dataPoints);
 		
-		return new ChartViewDTO(title, type, dataPoints);
+//		ChartViewDTO chartViewDTO = new ChartViewDTO();
+//		chartViewDTO.setDataPoints(dataPoints);
+		
+		return dataPoints;
 	}
 
 }

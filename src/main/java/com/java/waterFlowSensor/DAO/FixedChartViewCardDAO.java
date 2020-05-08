@@ -8,5 +8,5 @@ import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 @Repository
 public interface FixedChartViewCardDAO extends MongoRepository<FixedChartViewCardDTO, String>{
 	
-		
+	FixedChartViewCardDTO findByChartId(String chartId);
 }

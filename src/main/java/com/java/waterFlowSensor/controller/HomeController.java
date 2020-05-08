@@ -67,25 +67,23 @@ public class HomeController {
 	}
 
 	@GetMapping(value = "/getDeviceDetails")
-	public ResponseEntity<DeviceDTO> getDeviceDetails(@Valid @RequestHeader String username,
-			@Valid @RequestHeader String description) {
-		log.info("\n\n--- Requisição para recuperar detalhes do dispositivo recebida. Username: " + username
-				+ ". Description: " + description);
+	public ResponseEntity<List<DeviceDTO>> getDeviceDetails(@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
 
-		DeviceDTO device = homeService.getDeviceDetails(username, description);
+		List<DeviceDTO> devices = homeService.getDeviceDetails(username);
 
-		log.info("Retorno da requisição de recuperar detalhes do dispositivo: " + gson.toJson(device));
+		log.info("!!!! AQUI Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
 
-		return new ResponseEntity<DeviceDTO>(device, HttpStatus.OK);
+		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getChartView")
-	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String type,
-			@Valid @RequestHeader String title, @Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. Type: " + type + ". Title: " + title
+	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
+			@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId
 				+ ". Usuário: " + username);
 
-		ChartViewDTO chartView = homeService.getChartView(type, title, username);
+		ChartViewDTO chartView = homeService.getChartView(chartId, username);
 
 		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
 
