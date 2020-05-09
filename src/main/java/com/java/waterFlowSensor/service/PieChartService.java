@@ -13,13 +13,12 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 
 public class PieChartService {
 
-	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
+	public List<DataPointDTO> createChart(String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
 		Aggregation agg = Aggregation.newAggregation( // group by description, average all flow rates
@@ -40,7 +39,7 @@ public class PieChartService {
 			dataPoints.add(dataPoint);
 		}
 
-		return new ChartViewDTO(title, type, dataPoints);
+		return dataPoints;
 	}
 
 }

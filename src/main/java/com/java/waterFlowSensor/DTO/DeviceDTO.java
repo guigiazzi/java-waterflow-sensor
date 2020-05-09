@@ -20,8 +20,6 @@ public class DeviceDTO {
 	
 	private String _id;
 	@NotBlank
-	private String title;
-	@NotBlank
 	private String description;
 	@NotBlank
 	private String deviceId;

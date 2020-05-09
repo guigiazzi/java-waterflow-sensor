@@ -46,9 +46,6 @@ public class HomeService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Autowired
-	private ChartViewDTO chartView;
-	
 	public UserDTO getUserData(String username) {
 		log.info("Buscando dados do usuário " + username);
 		
@@ -117,20 +114,18 @@ public class HomeService {
 		
 		if(chartId.equals("3")) {
 			ColumnChartService columnChart = new ColumnChartService();
-			dataPoints = columnChart.createChart(username, mongoTemplate);		
+			dataPoints = columnChart.createChart(username, mongoTemplate);
+		} else if(chartId.equals("2")) {
+			LineChartService lineChart = new LineChartService();
+			dataPoints = lineChart.createChart(username, mongoTemplate);
+		} else if(chartId.equals("1")) {
+			PieChartService pieChart = new PieChartService();
+			dataPoints = pieChart.createChart(username, mongoTemplate);
 		}
-//		} else if(chartId.equals("2")) {
-//			LineChartService lineChart = new LineChartService();
-//			dataPoints = lineChart.createChart(username, mongoTemplate);
-//		} else if(chartId.equals("1")) {
-//			PieChartService pieChart = new PieChartService();
-//			dataPoints = pieChart.createChart(username, mongoTemplate);
-//		}
+		
 		
 		FixedChartViewCardDTO fixedChartView = fixedChartViewCardDAO.findByChartId(chartId);
-		chartView.setTitle(fixedChartView.getTitle());
-		chartView.setType(fixedChartView.getType());
-		chartView.setDataPoints(dataPoints);
-		return chartView;
+		
+		return new ChartViewDTO(fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
 	}
 }

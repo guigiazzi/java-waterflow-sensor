@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.util.WeekDaysUtil;
@@ -24,7 +23,7 @@ public class LineChartService {
 	
 	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 
-	public ChartViewDTO createChart(String type, String title, String username, MongoTemplate mongoTemplate) {
+	public List<DataPointDTO> createChart(String username, MongoTemplate mongoTemplate) {
 
 		// gets past week values
 		Date date = new Date();
@@ -66,7 +65,7 @@ public class LineChartService {
 		
 		dataPoints = weekDaysUtil.formatWeekDays(dataPoints);
 
-		return new ChartViewDTO(title, type, dataPoints);
+		return dataPoints;
 	}
 
 }
