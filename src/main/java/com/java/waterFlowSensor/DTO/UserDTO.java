@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.java.waterFlowSensor.enums.GenderEnum;
 import com.java.waterFlowSensor.enums.RegionEnum;
 
@@ -16,6 +18,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Document(collection = "UserCollection")
+@JsonInclude(Include.NON_NULL)
 public class UserDTO {
 
 	@NotBlank

@@ -4,6 +4,8 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.java.waterFlowSensor.enums.WeekDayEnum;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "DeviceCollection")
+@JsonInclude(Include.NON_NULL)
 public class DeviceDTO {
 	
 	private String _id;

@@ -121,11 +121,14 @@ public class HomeService {
 		} else if(chartId.equals("1")) {
 			PieChartService pieChart = new PieChartService();
 			dataPoints = pieChart.createChart(username, mongoTemplate);
+		} else if(chartId.equals("4")) {
+			LiveChartService liveChart = new LiveChartService();
+			dataPoints = liveChart.createChart(username, mongoTemplate);
 		}
 		
 		
 		FixedChartViewCardDTO fixedChartView = fixedChartViewCardDAO.findByChartId(chartId);
 		
-		return new ChartViewDTO(fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
+		return new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
 	}
 }
