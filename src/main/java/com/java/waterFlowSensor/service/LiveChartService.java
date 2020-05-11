@@ -42,8 +42,9 @@ public class LiveChartService {
 			double flowRateSum = timestampAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();
-			dataPoint.setX(timestamp);
+//			dataPoint.setX(timestamp);
 			dataPoint.setY(flowRateSum);
+			dataPoint.setLabel(timestamp);
 //			dataPoint.setLegendText(description);
 //			dataPoint.setName(description);
 			dataPoints.add(dataPoint);
