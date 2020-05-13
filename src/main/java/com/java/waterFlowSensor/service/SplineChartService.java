@@ -19,7 +19,7 @@ import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.util.WeekDaysUtil;
 
-public class LineChartService {
+public class SplineChartService {
 	
 	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
 

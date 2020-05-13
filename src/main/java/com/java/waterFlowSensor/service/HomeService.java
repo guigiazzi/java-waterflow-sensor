@@ -116,8 +116,8 @@ public class HomeService {
 			ColumnChartService columnChart = new ColumnChartService();
 			dataPoints = columnChart.createChart(username, mongoTemplate);
 		} else if(chartId.equals("2")) {
-			LineChartService lineChart = new LineChartService();
-			dataPoints = lineChart.createChart(username, mongoTemplate);
+			SplineChartService splineChart = new SplineChartService();
+			dataPoints = splineChart.createChart(username, mongoTemplate);
 		} else if(chartId.equals("1")) {
 			PieChartService pieChart = new PieChartService();
 			dataPoints = pieChart.createChart(username, mongoTemplate);
