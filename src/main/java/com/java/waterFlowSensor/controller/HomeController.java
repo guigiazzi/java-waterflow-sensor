@@ -72,7 +72,7 @@ public class HomeController {
 
 		List<DeviceDTO> devices = homeService.getDeviceDetails(username);
 
-		log.info("!!!! AQUI Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
+		log.info("Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
 
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}

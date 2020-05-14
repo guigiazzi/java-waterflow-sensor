@@ -25,8 +25,6 @@ public class DataPointDTO {
 	private String label;
 	@NotBlank	
 	private String name;
-//	@NotBlank
-//	private String indexLabel;
 	@NotBlank
 	private String legendText;
 }

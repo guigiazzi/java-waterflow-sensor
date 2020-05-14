@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
@@ -31,14 +30,8 @@ import lombok.extern.java.Log;
 @Service
 public class HomeService {
 
-//	@Autowired
-//	ChartViewDAO chartViewDAO;
-
 	@Autowired
 	private FixedChartViewCardDAO fixedChartViewCardDAO;
-
-	@Autowired
-	private DeviceDAO deviceDAO;
 	
 	@Autowired
 	private UserDAO userDAO;
@@ -70,57 +63,28 @@ public class HomeService {
 	public List<DeviceDTO> getDeviceDetails(String username) {
 		log.info("Buscando detalhes dos dispositivos. Username: " + username);
 		Aggregation agg = Aggregation.newAggregation( // group by deviceId, sum all flow rates
-//			project("deviceId", "username", "flowRate", "description"),
 			match(Criteria.where("username").is(username)),
 			group("title", "description", "deviceId", "username", "timestamp", "flowRate").sum("flowRate").as("flowRate"),
-//			group("deviceId").sum("flowRate").as("flowRate"),
 			sort(Sort.Direction.ASC, "flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> deviceIdAndFlowRateSumList = results.getMappedResults();
 
 		return deviceIdAndFlowRateSumList;
-
-//		List<DeviceDTO> devices = deviceDAO.findAllByUsername(username);
-//		return devices;
-
-//		double flowRateSum = 0;
-//		for (DeviceDTO device : devices) {
-//			flowRateSum += device.getFlowRate();
-//		}
-//
-//		DeviceDTO device = devices.get(0); // could choose any one, since we only want description and deviceId values
-//		device.setFlowRate(flowRateSum);
-//		return device;
-
-//		Aggregation agg = Aggregation.newAggregation( // group by description, sum all flow rates
-//		        match(Criteria.where("description").is(description)),
-//		        group("description").sum("flowRate").as("flowRate"),
-//		        project("flowRate")
-//		    );
-//
-//		AggregationResults<String> results = mongoTemplate.aggregate(agg, "DeviceCollection", String.class);
-//		String flowRateSum = results.getMappedResults().get(0);
-//		System.out.println("flowRateSum: " + flowRateSum);
-//		List<DeviceDTO> devices = deviceDAO.findAllByDescription(description);
-//		DeviceDTO device = devices.get(0); // could choose any one
-//		device.setFlowRate(flowRateSum);
-//		return device;
-//		return deviceDAO.findByDescription(description);
 	}
 
 	public ChartViewDTO getChartView(String chartId, String username) {
 		log.info("Buscando detalhes do gráfico");
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 		
-		if(chartId.equals("3")) {
-			ColumnChartService columnChart = new ColumnChartService();
-			dataPoints = columnChart.createChart(username, mongoTemplate);
+		if(chartId.equals("1")) {
+			PieChartService pieChart = new PieChartService();
+			dataPoints = pieChart.createChart(username, mongoTemplate);
 		} else if(chartId.equals("2")) {
 			SplineChartService splineChart = new SplineChartService();
 			dataPoints = splineChart.createChart(username, mongoTemplate);
-		} else if(chartId.equals("1")) {
-			PieChartService pieChart = new PieChartService();
-			dataPoints = pieChart.createChart(username, mongoTemplate);
+		} else if(chartId.equals("3")) {
+			ColumnChartService columnChart = new ColumnChartService();
+			dataPoints = columnChart.createChart(username, mongoTemplate);
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, mongoTemplate);

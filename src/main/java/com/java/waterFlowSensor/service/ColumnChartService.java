@@ -42,9 +42,6 @@ public class ColumnChartService {
 		
 		dataPoints = weekDaysUtil.formatWeekDays(dataPoints);
 		
-//		ChartViewDTO chartViewDTO = new ChartViewDTO();
-//		chartViewDTO.setDataPoints(dataPoints);
-		
 		return dataPoints;
 	}
 

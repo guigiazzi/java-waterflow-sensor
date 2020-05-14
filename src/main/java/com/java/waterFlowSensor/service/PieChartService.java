@@ -21,7 +21,7 @@ public class PieChartService {
 	public List<DataPointDTO> createChart(String username, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
-		Aggregation agg = Aggregation.newAggregation( // group by description, average all flow rates
+		Aggregation agg = Aggregation.newAggregation( // group by description, sum all flow rates
 				match(Criteria.where("username").is(username)),
 				group("description").sum("flowRate").as("flowRate"),
 				sort(Sort.Direction.ASC, "flowRate"));
