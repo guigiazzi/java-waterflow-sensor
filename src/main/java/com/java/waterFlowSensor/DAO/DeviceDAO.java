@@ -16,6 +16,8 @@ public interface DeviceDAO extends MongoRepository<DeviceDTO, String>{
 		
 	DeviceDTO findByDeviceId(String deviceId);
 	
+	List<DeviceDTO> findAllByDeviceId(String deviceId);
+		
 	DeviceDTO findByDescription(String description);
 	
 	List<DeviceDTO> findAllByUsernameAndDescription(String username, String description);

@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
@@ -35,6 +36,9 @@ public class HomeService {
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private DeviceDAO deviceDAO;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -64,12 +68,21 @@ public class HomeService {
 		log.info("Buscando detalhes dos dispositivos. Username: " + username);
 		Aggregation agg = Aggregation.newAggregation( // group by deviceId, sum all flow rates
 			match(Criteria.where("username").is(username)),
-			group("title", "description", "deviceId", "username", "timestamp", "flowRate").sum("flowRate").as("flowRate"),
+//			group("title", "description", "deviceId", "username", "timestamp", "flowRate").sum("flowRate").as("flowRate"),
+			group("deviceId").sum("flowRate").as("flowRate"),
 			sort(Sort.Direction.ASC, "flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> deviceIdAndFlowRateSumList = results.getMappedResults();
 
-		return deviceIdAndFlowRateSumList;
+		// needs to be done because the group by function returns only deviceId and flowRate data
+		List<DeviceDTO> completeDeviceIdList = new ArrayList<>();
+		for(DeviceDTO d : deviceIdAndFlowRateSumList) {
+			DeviceDTO completeDevice = deviceDAO.findAllByDeviceId(d.get_id()).get(0);
+			completeDevice.setFlowRate(d.getFlowRate());
+			completeDeviceIdList.add(completeDevice);	
+		}
+		
+		return completeDeviceIdList;
 	}
 
 	public ChartViewDTO getChartView(String chartId, String username) {
