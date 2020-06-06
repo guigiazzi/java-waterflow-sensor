@@ -1,9 +1,13 @@
 package com.java.waterFlowSensor.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
+import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.UserDTO;
 
 import lombok.extern.java.Log;
@@ -14,6 +18,9 @@ public class UserService {
 	
 	@Autowired
 	private UserDAO userDao;
+	
+	@Autowired
+	private DeviceDAO deviceDao;
 	
 	public void registrer(UserDTO user) {
 		if(userDao.existsByUsername(user.getUsername())) {
@@ -41,6 +48,14 @@ public class UserService {
 		log.info("Atualizando usuário no MongoDB");
 		
 		userDao.save(user);
+		
+		if(!user.getUsername().equals(currentUsername)){
+			List<DeviceDTO> devices = deviceDao.findAllByUsername(currentUsername);
+			for(DeviceDTO device : devices) {
+				device.setUsername(user.getUsername());
+			}
+			deviceDao.saveAll(devices);
+		}
 	}
 	
 	public void login(String username, String password) {
