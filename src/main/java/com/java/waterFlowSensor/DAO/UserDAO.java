@@ -14,4 +14,6 @@ public interface UserDAO extends MongoRepository<UserDTO, String>{
 	
 	UserDTO findByUsername(String username);
 	
+	void deleteByUsername(String username);
+	
 }

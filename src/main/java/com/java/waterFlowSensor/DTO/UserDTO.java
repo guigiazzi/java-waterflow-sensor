@@ -20,7 +20,8 @@ import lombok.Setter;
 @Document(collection = "UserCollection")
 @JsonInclude(Include.NON_NULL)
 public class UserDTO {
-
+	
+	private String _id;
 	@NotBlank
 	private String username;
 	@NotBlank

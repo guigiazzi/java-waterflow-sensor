@@ -10,7 +10,9 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,28 @@ public class UserController {
 		log.info("Usuário cadastrado com sucesso");
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/retrieveProfileData")
+	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar dados completos do perfil do usuário " + username + " recebida");
+
+		UserDTO user = userService.retrieveProfileData(username);
+
+		log.info("Retorno da requisição de recuperar dados completos do perfil " + gson.toJson(user));
+
+		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/updateProfile/{currentUsername}")
+	public ResponseEntity<String> updateProfile(@Valid @RequestBody UserDTO user, @Valid @PathVariable String currentUsername) {
+		log.info("\n\n--- Requisição para atualizar dados do perfil " + currentUsername + " recebida: " + gson.toJson(user));
+
+		userService.updateProfile(user, currentUsername);
+
+		log.info("Usuário atualizado com sucesso");
+
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/login")
