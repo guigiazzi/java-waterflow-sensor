@@ -35,10 +35,9 @@ public class SplineChartService {
 		c.add(Calendar.DATE, 6);
 		Date end = c.getTime();
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String formatStart = dateFormat.format(start);
-		String formatEnd = dateFormat.format(end);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
+		String formatStart = dateFormat.format(start).concat(" 00:00:00");
+		String formatEnd = dateFormat.format(end).concat(" 23:59:59");
 		System.out.println("Start: " + formatStart + ", end: " + formatEnd);
 		Aggregation agg = Aggregation.newAggregation( // group by weekDay, sum all flow rates
 				match(Criteria.where("username").is(username)),

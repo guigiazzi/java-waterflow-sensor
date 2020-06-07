@@ -30,13 +30,18 @@ public class LiveChartService {
 
 		Collections.sort(timestampAndFlowRateSumList, TimestampUtil.timestampComparator);
 		
+		while(timestampAndFlowRateSumList.size() > 10) {
+			timestampAndFlowRateSumList.remove(timestampAndFlowRateSumList.size());
+		}
+		
 		for (DeviceDTO timestampAndFlowRateSum : timestampAndFlowRateSumList) {
 			String timestamp = timestampAndFlowRateSum.get_id();
+			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1);
 			double flowRateSum = timestampAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();
 			dataPoint.setY(flowRateSum);
-			dataPoint.setLabel(timestamp);
+			dataPoint.setLabel(formatTimestamp);
 			dataPoints.add(dataPoint);
 		}
 
