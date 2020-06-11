@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -35,7 +34,7 @@ public class SplineChartService {
 		c.add(Calendar.DATE, 6);
 		Date end = c.getTime();
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String formatStart = dateFormat.format(start).concat(" 00:00:00");
 		String formatEnd = dateFormat.format(end).concat(" 23:59:59");
 		System.out.println("Start: " + formatStart + ", end: " + formatEnd);

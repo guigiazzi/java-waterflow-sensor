@@ -24,19 +24,24 @@ public class LiveChartService {
 		Aggregation agg = Aggregation.newAggregation( // group by timestamp, sum all flow rates
 				match(Criteria.where("username").is(username)),
 				group("timestamp").sum("flowRate").as("flowRate"));
+//				sort(Sort.Direction.ASC, "timestamp"),
+//				limit(7));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> unmodifiableList = results.getMappedResults();
 		List<DeviceDTO> timestampAndFlowRateSumList = new ArrayList<DeviceDTO>(unmodifiableList);
 
-		Collections.sort(timestampAndFlowRateSumList, TimestampUtil.timestampComparator);
+		Collections.sort(timestampAndFlowRateSumList, TimestampUtil.timestampComparator); // sorts array by timestamp
+		Collections.reverse(timestampAndFlowRateSumList); // reverse order, so that latest values come first
 		
-		while(timestampAndFlowRateSumList.size() > 10) {
-			timestampAndFlowRateSumList.remove(timestampAndFlowRateSumList.size());
+		while(timestampAndFlowRateSumList.size() > 7) { // limits to only 7 values
+			timestampAndFlowRateSumList.remove(timestampAndFlowRateSumList.size() - 1);
 		}
+		
+		Collections.reverse(timestampAndFlowRateSumList); // reverse order, so that oldest values come first
 		
 		for (DeviceDTO timestampAndFlowRateSum : timestampAndFlowRateSumList) {
 			String timestamp = timestampAndFlowRateSum.get_id();
-			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1);
+			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1); // gets only time
 			double flowRateSum = timestampAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();
