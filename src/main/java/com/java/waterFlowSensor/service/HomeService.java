@@ -85,7 +85,7 @@ public class HomeService {
 		return completeDeviceIdList;
 	}
 
-	public ChartViewDTO getChartView(String chartId, String username) {
+	public ChartViewDTO getChartView(String chartId, String deviceId, String username) {
 		log.info("Buscando detalhes do gráfico");
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 		
@@ -100,7 +100,7 @@ public class HomeService {
 			dataPoints = columnChart.createChart(username, mongoTemplate);
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
-			dataPoints = liveChart.createChart(username, mongoTemplate);
+			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
 		}
 		
 		

@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class HomeController {
 
 	@Autowired
 	private Gson gson;
-	
+
 	@GetMapping(value = "/getUserData")
 	public ResponseEntity<UserDTO> getUserData(@Valid @RequestHeader String username) {
 		log.info("\n\n--- Requisição para recuperar dados do usuário");
@@ -79,11 +80,10 @@ public class HomeController {
 
 	@GetMapping(value = "/getChartView")
 	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
-			@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId
-				+ ". Usuário: " + username);
+			@Nullable @RequestHeader String deviceId, @Valid @RequestHeader String username) {
+		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
 
-		ChartViewDTO chartView = homeService.getChartView(chartId, username);
+		ChartViewDTO chartView = homeService.getChartView(chartId, deviceId, username);
 
 		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
 

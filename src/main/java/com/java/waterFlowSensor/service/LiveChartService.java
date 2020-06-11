@@ -18,11 +18,12 @@ import com.java.waterFlowSensor.util.TimestampUtil;
 
 public class LiveChartService {
 	
-	public List<DataPointDTO> createChart(String username, MongoTemplate mongoTemplate) {
+	public List<DataPointDTO> createChart(String username, String deviceId, MongoTemplate mongoTemplate) {
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 
 		Aggregation agg = Aggregation.newAggregation( // group by timestamp, sum all flow rates
 				match(Criteria.where("username").is(username)),
+				match(Criteria.where("deviceId").is(deviceId)),
 				group("timestamp").sum("flowRate").as("flowRate"));
 //				sort(Sort.Direction.ASC, "timestamp"),
 //				limit(7));
@@ -41,12 +42,12 @@ public class LiveChartService {
 		
 		for (DeviceDTO timestampAndFlowRateSum : timestampAndFlowRateSumList) {
 			String timestamp = timestampAndFlowRateSum.get_id();
-			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1); // gets only time
+//			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1); // gets only time
 			double flowRateSum = timestampAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();
 			dataPoint.setY(flowRateSum);
-			dataPoint.setLabel(formatTimestamp);
+			dataPoint.setLabel(timestamp);
 			dataPoints.add(dataPoint);
 		}
 
