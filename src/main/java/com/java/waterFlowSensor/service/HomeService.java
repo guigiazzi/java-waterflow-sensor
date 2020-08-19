@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.java.waterFlowSensor.DAO.CacheLikeDAO;
 import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
@@ -24,6 +25,7 @@ import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 import com.java.waterFlowSensor.DTO.UserDTO;
+import com.java.waterFlowSensor.util.CacheRecordUtil;
 
 import lombok.extern.java.Log;
 
@@ -39,6 +41,9 @@ public class HomeService {
 	
 	@Autowired
 	private DeviceDAO deviceDAO;
+	
+	@Autowired
+	private CacheLikeDAO cacheLikeDAO;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -101,11 +106,25 @@ public class HomeService {
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
+//			CacheRecordUtil cacheRecords = new CacheRecordUtil(username, dataPoints);
+//			this.cacheLikeDAO.insert(cacheRecords);			
 		}
 		
 		
 		FixedChartViewCardDTO fixedChartView = fixedChartViewCardDAO.findByChartId(chartId);
 		
-		return new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
+		ChartViewDTO chartViewDTO = new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
+		
+//		ChartViewDTO chartViewDTO = new ChartViewDTO();
+//		chartViewDTO.setChartId(chartId);
+//		chartViewDTO.setTitle(fixedChartView.getTitle());
+//		chartViewDTO.setType(fixedChartView.getType());
+//		chartViewDTO.setDataPoints(dataPoints);
+//
+//		if(chartId.equals("4")) {
+//			chartViewDTO.setConnectedDevice(false);
+//		}
+		
+		return chartViewDTO;
 	}
 }

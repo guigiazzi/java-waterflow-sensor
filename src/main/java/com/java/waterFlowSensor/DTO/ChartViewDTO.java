@@ -2,8 +2,6 @@ package com.java.waterFlowSensor.DTO;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -14,18 +12,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class ChartViewDTO {
 
-	@NotBlank
 	private String chartId;
-	@NotBlank
 	private String title;
-	@NotBlank
 	private String type;
-	@NotBlank
 	private List<DataPointDTO> dataPoints;
+//	private boolean connectedDevice;
 
 }
