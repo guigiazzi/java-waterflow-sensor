@@ -21,6 +21,6 @@ public class ChartViewDTO {
 	private String title;
 	private String type;
 	private List<DataPointDTO> dataPoints;
-//	private boolean connectedDevice;
+	private boolean connectedDevice;
 
 }

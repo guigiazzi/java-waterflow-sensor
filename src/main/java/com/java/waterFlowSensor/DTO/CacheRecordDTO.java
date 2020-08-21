@@ -1,8 +1,8 @@
-package com.java.waterFlowSensor.util;
+package com.java.waterFlowSensor.DTO;
 
 import java.util.List;
 
-import com.java.waterFlowSensor.DTO.DataPointDTO;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CacheRecordUtil {
+@Document(collection = "CacheRecordCollection")
+public class CacheRecordDTO {
 	
 	private String username;
 	private List<DataPointDTO> dataPoints;

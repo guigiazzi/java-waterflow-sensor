@@ -16,16 +16,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.java.waterFlowSensor.DAO.CacheLikeDAO;
+import com.java.waterFlowSensor.DAO.CacheRecordDAO;
 import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
+import com.java.waterFlowSensor.DTO.CacheRecordDTO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 import com.java.waterFlowSensor.DTO.UserDTO;
-import com.java.waterFlowSensor.util.CacheRecordUtil;
 
 import lombok.extern.java.Log;
 
@@ -43,7 +43,7 @@ public class HomeService {
 	private DeviceDAO deviceDAO;
 	
 	@Autowired
-	private CacheLikeDAO cacheLikeDAO;
+	private CacheRecordDAO cacheRecordDAO;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -82,7 +82,7 @@ public class HomeService {
 		// needs to be done because the group by function returns only deviceId and flowRate data
 		List<DeviceDTO> completeDeviceIdList = new ArrayList<>();
 		for(DeviceDTO d : deviceIdAndFlowRateSumList) {
-			DeviceDTO completeDevice = deviceDAO.findAllByDeviceId(d.get_id()).get(0);
+			DeviceDTO completeDevice = deviceDAO.findAllByDeviceIdAndUsername(d.get_id(), username).get(0);
 			completeDevice.setFlowRate(d.getFlowRate());
 			completeDeviceIdList.add(completeDevice);	
 		}
@@ -106,24 +106,24 @@ public class HomeService {
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
-//			CacheRecordUtil cacheRecords = new CacheRecordUtil(username, dataPoints);
-//			this.cacheLikeDAO.insert(cacheRecords);			
+			CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints);
+			this.cacheRecordDAO.insert(cacheRecord);			
 		}
 		
 		
 		FixedChartViewCardDTO fixedChartView = fixedChartViewCardDAO.findByChartId(chartId);
 		
-		ChartViewDTO chartViewDTO = new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
+//		ChartViewDTO chartViewDTO = new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
 		
-//		ChartViewDTO chartViewDTO = new ChartViewDTO();
-//		chartViewDTO.setChartId(chartId);
-//		chartViewDTO.setTitle(fixedChartView.getTitle());
-//		chartViewDTO.setType(fixedChartView.getType());
-//		chartViewDTO.setDataPoints(dataPoints);
-//
-//		if(chartId.equals("4")) {
-//			chartViewDTO.setConnectedDevice(false);
-//		}
+		ChartViewDTO chartViewDTO = new ChartViewDTO();
+		chartViewDTO.setChartId(chartId);
+		chartViewDTO.setTitle(fixedChartView.getTitle());
+		chartViewDTO.setType(fixedChartView.getType());
+		chartViewDTO.setDataPoints(dataPoints);
+
+		if(chartId.equals("4")) {
+			chartViewDTO.setConnectedDevice(false);
+		}
 		
 		return chartViewDTO;
 	}
