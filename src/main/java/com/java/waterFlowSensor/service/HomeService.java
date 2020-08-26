@@ -94,6 +94,8 @@ public class HomeService {
 		log.info("Buscando detalhes do gráfico");
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 		
+		ChartViewDTO chartViewDTO = new ChartViewDTO();
+		
 		if(chartId.equals("1")) {
 			PieChartService pieChart = new PieChartService();
 			dataPoints = pieChart.createChart(username, mongoTemplate);
@@ -106,25 +108,24 @@ public class HomeService {
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
-			CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints);
-			this.cacheRecordDAO.insert(cacheRecord);			
+
+			if(!cacheRecordDAO.existsByUsernameAndDataPoints(username, dataPoints)) {
+				CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints);
+				this.cacheRecordDAO.insert(cacheRecord);
+				chartViewDTO.setConnectedDevice(true);
+			} else {
+				chartViewDTO.setConnectedDevice(false);
+			}
 		}
 		
-		
 		FixedChartViewCardDTO fixedChartView = fixedChartViewCardDAO.findByChartId(chartId);
-		
-//		ChartViewDTO chartViewDTO = new ChartViewDTO(chartId, fixedChartView.getTitle(), fixedChartView.getType(), dataPoints);
-		
-		ChartViewDTO chartViewDTO = new ChartViewDTO();
+				
 		chartViewDTO.setChartId(chartId);
 		chartViewDTO.setTitle(fixedChartView.getTitle());
 		chartViewDTO.setType(fixedChartView.getType());
 		chartViewDTO.setDataPoints(dataPoints);
-
-		if(chartId.equals("4")) {
-			chartViewDTO.setConnectedDevice(false);
-		}
 		
 		return chartViewDTO;
 	}
+	
 }
