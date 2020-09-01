@@ -18,5 +18,6 @@ public class CacheRecordDTO {
 	
 	private String username;
 	private List<DataPointDTO> dataPoints;
+	private String timestamp;
 	
 }

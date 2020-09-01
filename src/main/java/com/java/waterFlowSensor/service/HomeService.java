@@ -4,7 +4,9 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.grou
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +112,10 @@ public class HomeService {
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
 
 			if(!cacheRecordDAO.existsByUsernameAndDataPoints(username, dataPoints)) {
-				CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints);
+				Date date = new Date();
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		        String timestamp = sdf.format(date);
+				CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints, timestamp);
 				this.cacheRecordDAO.insert(cacheRecord);
 				chartViewDTO.setConnectedDevice(true);
 			} else {
