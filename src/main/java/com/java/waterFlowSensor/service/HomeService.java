@@ -4,9 +4,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.grou
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +16,12 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.java.waterFlowSensor.DAO.CacheRecordDAO;
+import com.java.waterFlowSensor.DAO.ConnectedCacheRecordDAO;
 import com.java.waterFlowSensor.DAO.DeviceDAO;
 import com.java.waterFlowSensor.DAO.FixedChartViewCardDAO;
 import com.java.waterFlowSensor.DAO.UserDAO;
-import com.java.waterFlowSensor.DTO.CacheRecordDTO;
 import com.java.waterFlowSensor.DTO.ChartViewDTO;
+import com.java.waterFlowSensor.DTO.ConnectedCacheRecordDTO;
 import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
@@ -45,25 +43,25 @@ public class HomeService {
 	private DeviceDAO deviceDAO;
 	
 	@Autowired
-	private CacheRecordDAO cacheRecordDAO;
+	private ConnectedCacheRecordDAO connectedCacheRecordDAO;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	public UserDTO getUserData(String username) {
-		log.info("Buscando dados do usuário " + username);
+		//log.info("Buscando dados do usuário " + username);
 		
 		return userDAO.findByUsername(username);
 	}
 
 	public List<FixedChartViewCardDTO> getFixedChartViewCards() {
-		log.info("Buscando cards para gráficos das visões");
+		//log.info("Buscando cards para gráficos das visões");
 
 		return fixedChartViewCardDAO.findAll();
 	}
 
 	public List<String> getDeviceCards(String username) {
-		log.info("Buscando cards dos dispositivos para o usuário " + username);
+		//log.info("Buscando cards dos dispositivos para o usuário " + username);
 
 		Criteria criteria = new Criteria("username").is(username);
 		Query query = new Query();
@@ -72,7 +70,7 @@ public class HomeService {
 	}
 
 	public List<DeviceDTO> getDeviceDetails(String username) {
-		log.info("Buscando detalhes dos dispositivos. Username: " + username);
+		//log.info("Buscando detalhes dos dispositivos. Username: " + username);
 		Aggregation agg = Aggregation.newAggregation( // group by deviceId, sum all flow rates
 			match(Criteria.where("username").is(username)),
 //			group("title", "description", "deviceId", "username", "timestamp", "flowRate").sum("flowRate").as("flowRate"),
@@ -92,7 +90,7 @@ public class HomeService {
 		return completeDeviceIdList;
 	}
 
-	public ChartViewDTO getChartView(String chartId, String deviceId, String username) {
+	public ChartViewDTO getChartView(String chartId, String deviceId, String username, String incomingSource) {
 		log.info("Buscando detalhes do gráfico");
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 		
@@ -110,16 +108,25 @@ public class HomeService {
 		} else if(chartId.equals("4")) {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
-
-			if(!cacheRecordDAO.existsByUsernameAndDataPoints(username, dataPoints)) {
-				Date date = new Date();
-		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		        String timestamp = sdf.format(date);
-				CacheRecordDTO cacheRecord = new CacheRecordDTO(username, dataPoints, timestamp);
-				this.cacheRecordDAO.insert(cacheRecord);
-				chartViewDTO.setConnectedDevice(true);
+			
+			if(connectedCacheRecordDAO.existsByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints)) {
+				List<ConnectedCacheRecordDTO> connectedCacheRecordList =
+						connectedCacheRecordDAO.findAllByUsernameAndDeviceId(username, deviceId);
+				
+				ConnectedCacheRecordDTO lastConnectedCacheRecord =
+						connectedCacheRecordList.get(connectedCacheRecordList.size() -1);
+				
+				if(lastConnectedCacheRecord.getDataPoints().equals(dataPoints)) {	
+					ConnectedCacheRecordDTO cacheRecord = new ConnectedCacheRecordDTO(username, deviceId, dataPoints);
+					this.connectedCacheRecordDAO.insert(cacheRecord);
+					chartViewDTO.setConnectedDevice(true);
+				} else {
+					chartViewDTO.setConnectedDevice(false);
+				}
 			} else {
-				chartViewDTO.setConnectedDevice(false);
+				ConnectedCacheRecordDTO cacheRecord = new ConnectedCacheRecordDTO(username, deviceId, dataPoints);
+				this.connectedCacheRecordDAO.insert(cacheRecord);
+				chartViewDTO.setConnectedDevice(true);
 			}
 		}
 		

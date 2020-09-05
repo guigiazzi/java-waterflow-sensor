@@ -13,11 +13,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "CacheRecordCollection")
-public class CacheRecordDTO {
+@Document(collection = "ConnectedCacheRecordCollection")
+public class ConnectedCacheRecordDTO {
 	
 	private String username;
+	private String deviceId;
 	private List<DataPointDTO> dataPoints;
-	private String timestamp;
 	
 }

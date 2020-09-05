@@ -36,63 +36,71 @@ public class HomeController {
 
 	@GetMapping(value = "/getUserData")
 	public ResponseEntity<UserDTO> getUserData(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar dados do usuário");
+		//log.info("\n\n--- Requisição para recuperar dados do usuário");
 
 		UserDTO user = homeService.getUserData(username);
 
-		log.info("Retorno da requisição de recuperar dados do usuário: " + gson.toJson(user));
+		//log.info("Retorno da requisição de recuperar dados do usuário: " + gson.toJson(user));
 
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getFixedChartViewCards")
 	public ResponseEntity<List<FixedChartViewCardDTO>> getChartViewCards() {
-		log.info("\n\n--- Requisição para recuperar cards dos gráficos das visões");
+		//log.info("\n\n--- Requisição para recuperar cards dos gráficos das visões");
 
 		List<FixedChartViewCardDTO> chartViewCards = homeService.getFixedChartViewCards();
 
-		log.info("Retorno da requisição de recuperar cards dos gráficos das visões: " + gson.toJson(chartViewCards));
+		//log.info("Retorno da requisição de recuperar cards dos gráficos das visões: " + gson.toJson(chartViewCards));
 
 		return new ResponseEntity<List<FixedChartViewCardDTO>>(chartViewCards, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getDeviceCards")
 	public ResponseEntity<List<String>> getDeviceCards(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar cards dos dispositivos recebida. Usuário: " + username);
+		//log.info("\n\n--- Requisição para recuperar cards dos dispositivos recebida. Usuário: " + username);
 
 		List<String> devices = homeService.getDeviceCards(username);
 
-		log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
+		//log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
 
 		return new ResponseEntity<List<String>>(devices, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getDeviceDetails")
 	public ResponseEntity<List<DeviceDTO>> getDeviceDetails(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
+		//log.info("\n\n--- Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
 
 		List<DeviceDTO> devices = homeService.getDeviceDetails(username);
 
-		log.info("Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
+		//log.info("Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
 
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getChartView")
 	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
-			@Nullable @RequestHeader String deviceId, @Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
+			@Nullable @RequestHeader String deviceId, @Valid @RequestHeader String username,
+			@Valid @RequestHeader String incomingSource) {
+		if(chartId.equals("4")) {
+			log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username +
+					". DeviceId: " + deviceId + ". IncomingSource: " + incomingSource);
+		}
+		//log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
 
-		ChartViewDTO chartView = homeService.getChartView(chartId, deviceId, username);
+		ChartViewDTO chartView = homeService.getChartView(chartId, deviceId, username, incomingSource);
 
-		log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
+		if(chartId.equals("4")) {
+			log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
+		}
+		//log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
 
 		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentExceptions(IllegalArgumentException ex) {
-		log.severe(ex.getMessage());
+		//log.severe(ex.getMessage());
 
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
