@@ -109,22 +109,20 @@ public class HomeService {
 			LiveChartService liveChart = new LiveChartService();
 			dataPoints = liveChart.createChart(username, deviceId, mongoTemplate);
 			
-			if(connectedCacheRecordDAO.existsByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints)) {
-				List<ConnectedCacheRecordDTO> connectedCacheRecordList =
-						connectedCacheRecordDAO.findAllByUsernameAndDeviceId(username, deviceId);
-				
-				ConnectedCacheRecordDTO lastConnectedCacheRecord =
-						connectedCacheRecordList.get(connectedCacheRecordList.size() -1);
-				
-				if(lastConnectedCacheRecord.getDataPoints().equals(dataPoints)) {	
-					ConnectedCacheRecordDTO cacheRecord = new ConnectedCacheRecordDTO(username, deviceId, dataPoints);
-					this.connectedCacheRecordDAO.insert(cacheRecord);
-					chartViewDTO.setConnectedDevice(true);
-				} else {
-					chartViewDTO.setConnectedDevice(false);
-				}
+			if(connectedCacheRecordDAO.existsByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints)
+					&& incomingSource.equals("refresh")) {
+				ConnectedCacheRecordDTO connectedCacheRecordDTO =
+						connectedCacheRecordDAO.findByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints);
+				connectedCacheRecordDTO.setConnected(false);
+				connectedCacheRecordDAO.save(connectedCacheRecordDTO);
+				chartViewDTO.setConnectedDevice(false);
+			} else if(connectedCacheRecordDAO.existsByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints)
+					&& incomingSource.equals("arrows")) {
+				ConnectedCacheRecordDTO connectedCacheRecordDTO =
+						connectedCacheRecordDAO.findByUsernameAndDeviceIdAndDataPoints(username, deviceId, dataPoints);
+				chartViewDTO.setConnectedDevice(connectedCacheRecordDTO.isConnected());
 			} else {
-				ConnectedCacheRecordDTO cacheRecord = new ConnectedCacheRecordDTO(username, deviceId, dataPoints);
+				ConnectedCacheRecordDTO cacheRecord = new ConnectedCacheRecordDTO(username, deviceId, dataPoints, true);
 				this.connectedCacheRecordDAO.insert(cacheRecord);
 				chartViewDTO.setConnectedDevice(true);
 			}

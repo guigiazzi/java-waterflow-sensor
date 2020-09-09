@@ -17,4 +17,6 @@ public interface ConnectedCacheRecordDAO extends MongoRepository<ConnectedCacheR
 	
 	boolean existsByUsernameAndDeviceIdAndDataPoints(String username, String deviceId, List<DataPointDTO> dataPoints);
 			
+	ConnectedCacheRecordDTO findByUsernameAndDeviceIdAndDataPoints(String username, String deviceId, List<DataPointDTO> dataPoints);
+
 }
