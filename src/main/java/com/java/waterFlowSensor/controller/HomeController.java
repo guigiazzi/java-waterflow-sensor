@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import lombok.extern.java.Log;
 @Log
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/v1/home")
 public class HomeController {
 
 	@Autowired
@@ -34,32 +36,32 @@ public class HomeController {
 	@Autowired
 	private Gson gson;
 
-	@GetMapping(value = "/getUserData")
+	@GetMapping(value = "/user-data")
 	public ResponseEntity<UserDTO> getUserData(@Valid @RequestHeader String username) {
-		//log.info("\n\n--- Requisição para recuperar dados do usuário");
+		//log.info("Request to get data from user " + username);
 
 		UserDTO user = homeService.getUserData(username);
-
-		//log.info("Retorno da requisição de recuperar dados do usuário: " + gson.toJson(user));
+		 
+		//log.info("Return from getting data from user: " + gson.toJson(user));
 
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getFixedChartViewCards")
+	@GetMapping(value = "/fixed-chart-view-cards")
 	public ResponseEntity<List<FixedChartViewCardDTO>> getChartViewCards() {
-		//log.info("\n\n--- Requisição para recuperar cards dos gráficos das visões");
+		//log.info("Request to get fixed chart view cards");
 
 		List<FixedChartViewCardDTO> chartViewCards = homeService.getFixedChartViewCards();
 
-		//log.info("Retorno da requisição de recuperar cards dos gráficos das visões: " + gson.toJson(chartViewCards));
+		//log.info("Return from getting fixed chart view cards: " + gson.toJson(chartViewCards));
 
 		return new ResponseEntity<List<FixedChartViewCardDTO>>(chartViewCards, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getDeviceCards")
+	@GetMapping(value = "/device-cards")
 	public ResponseEntity<List<String>> getDeviceCards(@Valid @RequestHeader String username) {
-		//log.info("\n\n--- Requisição para recuperar cards dos dispositivos recebida. Usuário: " + username);
-
+		//log.info("Request to get device cards from user " + username);
+		
 		List<String> devices = homeService.getDeviceCards(username);
 
 		//log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
@@ -67,9 +69,9 @@ public class HomeController {
 		return new ResponseEntity<List<String>>(devices, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getDeviceDetails")
+	@GetMapping(value = "/device-details")
 	public ResponseEntity<List<DeviceDTO>> getDeviceDetails(@Valid @RequestHeader String username) {
-		//log.info("\n\n--- Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
+		//log.info("Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
 
 		List<DeviceDTO> devices = homeService.getDeviceDetails(username);
 
@@ -78,15 +80,15 @@ public class HomeController {
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getChartView")
+	@GetMapping(value = "/chart-view")
 	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
 			@Nullable @RequestHeader String deviceId, @Valid @RequestHeader String username,
 			@Valid @RequestHeader String incomingSource) {
 		if(chartId.equals("4")) {
-			log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username +
+			log.info("Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username +
 					". DeviceId: " + deviceId + ". IncomingSource: " + incomingSource);
 		}
-		//log.info("\n\n--- Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
+		//log.info("Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
 
 		ChartViewDTO chartView = homeService.getChartView(chartId, deviceId, username, incomingSource);
 

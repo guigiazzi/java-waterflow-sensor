@@ -48,9 +48,7 @@ public class HomeService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public UserDTO getUserData(String username) {
-		//log.info("Buscando dados do usuário " + username);
-		
+	public UserDTO getUserData(String username) {		
 		return userDAO.findByUsername(username);
 	}
 

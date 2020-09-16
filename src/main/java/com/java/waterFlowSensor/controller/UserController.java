@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import lombok.extern.java.Log;
 @Log
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/v1/users")
 public class UserController {
 
 	@Autowired
@@ -36,7 +38,7 @@ public class UserController {
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<String> registrer(@Valid @RequestBody UserDTO user) {
-		log.info("\n\n--- Requisição para cadastro recebida: " + gson.toJson(user));
+		log.info("Requisição para cadastro recebida: " + gson.toJson(user));
 
 		userService.registrer(user);
 
@@ -45,9 +47,9 @@ public class UserController {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value = "/retrieveProfileData")
+	@GetMapping(value = "/profile-data")
 	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestHeader String username) {
-		log.info("\n\n--- Requisição para recuperar dados completos do perfil do usuário " + username + " recebida");
+		log.info("Requisição para recuperar dados completos do perfil do usuário " + username + " recebida");
 
 		UserDTO user = userService.retrieveProfileData(username);
 
@@ -56,9 +58,9 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 	
-	@PutMapping(value = "/updateProfile/{currentUsername}")
+	@PutMapping(value = "/profile/{currentUsername}")
 	public ResponseEntity<String> updateProfile(@Valid @RequestBody UserDTO user, @Valid @PathVariable String currentUsername) {
-		log.info("\n\n--- Requisição para atualizar dados do perfil " + currentUsername + " recebida: " + gson.toJson(user));
+		log.info("Requisição para atualizar dados do perfil " + currentUsername + " recebida: " + gson.toJson(user));
 
 		userService.updateProfile(user, currentUsername);
 
@@ -69,7 +71,7 @@ public class UserController {
 
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> registrer(@Valid @RequestHeader String username, @Valid @RequestHeader String password) {
-		log.info("\n\n--- Requisição para login recebida. Usuário: " + username + ", senha: " + password);
+		log.info("Requisição para login recebida. Usuário: " + username + ", senha: " + password);
 
 		userService.login(username, password);
 
