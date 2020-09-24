@@ -9,53 +9,52 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.java.waterFlowSensor.DTO.UserDTO;
-import com.java.waterFlowSensor.service.UserService;
+import com.java.waterFlowSensor.service.AuthenticationService;
 
 import lombok.extern.java.Log;
 
 @Log
 @RestController
-@RequestMapping("/v1/users")
-public class UserController {
+@RequestMapping("/v1/auth")
+public class AuthenticationController {
 
 	@Autowired
-	private UserService userService;
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	private Gson gson;
-	
-	@GetMapping(value = "/profile-data")
-	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestParam String userId) {
-		log.info("Requisição para recuperar dados completos do perfil do usuário " + userId + " recebida");
 
-		UserDTO user = userService.retrieveProfileData(userId);
+	@PostMapping(value = "/register")
+	public ResponseEntity<String> register(@Valid @RequestBody UserDTO user) {
+		log.info("Requisição para cadastro recebida: " + gson.toJson(user));
 
-		log.info("Retorno da requisição de recuperar dados completos do perfil " + gson.toJson(user));
+		authenticationService.register(user);
 
-		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
-	}
-	
-	@PutMapping(value = "/profile/{currentUsername}")
-	public ResponseEntity<String> updateProfile(@Valid @RequestBody UserDTO user, @Valid @PathVariable String currentUsername) {
-		log.info("Requisição para atualizar dados do perfil " + currentUsername + " recebida: " + gson.toJson(user));
+		log.info("Usuário cadastrado com sucesso");
 
-		userService.updateProfile(user, currentUsername);
-
-		log.info("Usuário atualizado com sucesso");
-
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
+	@GetMapping(value = "/login")
+	public ResponseEntity<String> login(@Valid @RequestHeader String username,
+			@Valid @RequestHeader String password) {
+		log.info("Requisição para login recebida. Usuário: " + username + ", senha: " + password);
+
+		String userId = authenticationService.login(username, password);
+
+		log.info("Login realizado com sucesso");
+
+		return new ResponseEntity<>(userId, HttpStatus.OK);
+	}
+	
 	@ExceptionHandler({ MethodArgumentNotValidException.class, MissingRequestHeaderException.class })
 	public ResponseEntity<String> handleValidationExceptions(Exception ex) {
 		String message = "Todos os campos obrigatórios precisam ser preenchidos";
