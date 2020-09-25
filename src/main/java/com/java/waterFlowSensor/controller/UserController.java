@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -25,6 +25,7 @@ import lombok.extern.java.Log;
 
 @Log
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/v1/users")
 public class UserController {
 
@@ -35,10 +36,10 @@ public class UserController {
 	private Gson gson;
 	
 	@GetMapping(value = "/profile-data")
-	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestParam String userId) {
-		log.info("Requisição para recuperar dados completos do perfil do usuário " + userId + " recebida");
+	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestHeader String username) {
+		log.info("Requisição para recuperar dados completos do perfil do usuário " + username + " recebida");
 
-		UserDTO user = userService.retrieveProfileData(userId);
+		UserDTO user = userService.retrieveProfileData(username);
 
 		log.info("Retorno da requisição de recuperar dados completos do perfil " + gson.toJson(user));
 

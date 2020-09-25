@@ -9,13 +9,11 @@ import com.java.waterFlowSensor.DTO.UserDTO;
 public interface UserDAO extends MongoRepository<UserDTO, String>{
 	
 	boolean existsByUsername(String username);
-	
-	boolean existsByUserId(String userId);
-	
+		
 	boolean existsByUsernameAndPassword(String username, String password);
 	
 	UserDTO findByUsername(String username);
-	
+		
 	void deleteByUsername(String username);
 	
 }

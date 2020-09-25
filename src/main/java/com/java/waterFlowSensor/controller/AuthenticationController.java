@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import lombok.extern.java.Log;
 
 @Log
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
 
@@ -44,15 +46,15 @@ public class AuthenticationController {
 	}
 
 	@GetMapping(value = "/login")
-	public ResponseEntity<String> login(@Valid @RequestHeader String username,
+	public ResponseEntity<UserDTO> login(@Valid @RequestHeader String username,
 			@Valid @RequestHeader String password) {
 		log.info("Requisição para login recebida. Usuário: " + username + ", senha: " + password);
 
-		String userId = authenticationService.login(username, password);
+		UserDTO user = authenticationService.login(username, password);
 
 		log.info("Login realizado com sucesso");
 
-		return new ResponseEntity<>(userId, HttpStatus.OK);
+		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 	
 	@ExceptionHandler({ MethodArgumentNotValidException.class, MissingRequestHeaderException.class })

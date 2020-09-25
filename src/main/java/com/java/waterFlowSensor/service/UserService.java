@@ -31,8 +31,8 @@ public class UserService {
 		userDao.insert(user);
 	}
 	
-	public UserDTO retrieveProfileData(String userId) {
-		if(!userDao.existsByUserId(userId)) {
+	public UserDTO retrieveProfileData(String username) {
+		if(!userDao.existsByUsername(username)) {
 			throw new IllegalArgumentException("Usuário não encontrado");
 		}
 		

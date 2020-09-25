@@ -24,15 +24,14 @@ public class AuthenticationService {
 		userDao.insert(user);
 	}
 	
-	public String login(String username, String password) {
+	public UserDTO login(String username, String password) {
 		if(!userDao.existsByUsernameAndPassword(username, password)) {
 			throw new IllegalArgumentException("Usuário ou senha incorretos");
 		}
 		
 		UserDTO user = userDao.findByUsername(username);
-		String userId = user.get_id();
 		
-		return userId;
+		return user;
 	}
 
 }
