@@ -25,8 +25,6 @@ public class LiveChartService {
 				match(Criteria.where("username").is(username)),
 				match(Criteria.where("deviceId").is(deviceId)),
 				group("timestamp").sum("flowRate").as("flowRate"));
-//				sort(Sort.Direction.ASC, "timestamp"),
-//				limit(7));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
 		List<DeviceDTO> unmodifiableList = results.getMappedResults();
 		List<DeviceDTO> timestampAndFlowRateSumList = new ArrayList<DeviceDTO>(unmodifiableList);
@@ -42,7 +40,6 @@ public class LiveChartService {
 		
 		for (DeviceDTO timestampAndFlowRateSum : timestampAndFlowRateSumList) {
 			String timestamp = timestampAndFlowRateSum.get_id();
-//			String formatTimestamp = timestamp.substring(timestamp.indexOf(" ") + 1); // gets only time
 			double flowRateSum = timestampAndFlowRateSum.getFlowRate();
 
 			DataPointDTO dataPoint = new DataPointDTO();

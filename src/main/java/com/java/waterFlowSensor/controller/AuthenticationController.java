@@ -36,11 +36,11 @@ public class AuthenticationController {
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<String> register(@Valid @RequestBody UserDTO user) {
-		log.info("Requisição para cadastro recebida: " + gson.toJson(user));
-
+		log.info("Register request received: " + gson.toJson(user));
+		
 		authenticationService.register(user);
 
-		log.info("Usuário cadastrado com sucesso");
+		log.info("User registered successfully");
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
@@ -48,11 +48,11 @@ public class AuthenticationController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<UserDTO> login(@Valid @RequestHeader String username,
 			@Valid @RequestHeader String password) {
-		log.info("Requisição para login recebida. Usuário: " + username + ", senha: " + password);
-
+		log.info("Login request received. User: : " + username + ", password: " + password);
+		
 		UserDTO user = authenticationService.login(username, password);
 
-		log.info("Login realizado com sucesso");
+		log.info("Login successfull");
 
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}

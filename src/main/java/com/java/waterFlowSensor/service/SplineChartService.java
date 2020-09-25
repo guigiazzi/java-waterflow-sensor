@@ -18,6 +18,9 @@ import com.java.waterFlowSensor.DTO.DataPointDTO;
 import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.util.WeekDaysUtil;
 
+import lombok.extern.java.Log;
+
+@Log
 public class SplineChartService {
 	
 	private WeekDaysUtil weekDaysUtil = new WeekDaysUtil();
@@ -37,7 +40,7 @@ public class SplineChartService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String formatStart = dateFormat.format(start).concat(" 00:00:00");
 		String formatEnd = dateFormat.format(end).concat(" 23:59:59");
-		System.out.println("Start: " + formatStart + ", end: " + formatEnd);
+		log.info("Range of past week values are: (start) " + formatStart + ", (end): " + formatEnd);
 		Aggregation agg = Aggregation.newAggregation( // group by weekDay, sum all flow rates
 				match(Criteria.where("username").is(username)),
 				match(Criteria.where("timestamp").gte(formatStart)), // gets range of past week

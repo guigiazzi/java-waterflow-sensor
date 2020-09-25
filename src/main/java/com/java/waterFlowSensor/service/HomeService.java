@@ -27,9 +27,6 @@ import com.java.waterFlowSensor.DTO.DeviceDTO;
 import com.java.waterFlowSensor.DTO.FixedChartViewCardDTO;
 import com.java.waterFlowSensor.DTO.UserDTO;
 
-import lombok.extern.java.Log;
-
-@Log
 @Service
 public class HomeService {
 
@@ -53,14 +50,10 @@ public class HomeService {
 	}
 
 	public List<FixedChartViewCardDTO> getFixedChartViewCards() {
-		//log.info("Buscando cards para gráficos das visões");
-
 		return fixedChartViewCardDAO.findAll();
 	}
 
 	public List<String> getDeviceCards(String username) {
-		//log.info("Buscando cards dos dispositivos para o usuário " + username);
-
 		Criteria criteria = new Criteria("username").is(username);
 		Query query = new Query();
 		query.addCriteria(criteria);
@@ -68,10 +61,8 @@ public class HomeService {
 	}
 
 	public List<DeviceDTO> getDeviceDetails(String username) {
-		//log.info("Buscando detalhes dos dispositivos. Username: " + username);
 		Aggregation agg = Aggregation.newAggregation( // group by deviceId, sum all flow rates
 			match(Criteria.where("username").is(username)),
-//			group("title", "description", "deviceId", "username", "timestamp", "flowRate").sum("flowRate").as("flowRate"),
 			group("deviceId").sum("flowRate").as("flowRate"),
 			sort(Sort.Direction.ASC, "flowRate"));
 		AggregationResults<DeviceDTO> results = mongoTemplate.aggregate(agg, "DeviceCollection", DeviceDTO.class);
@@ -89,7 +80,6 @@ public class HomeService {
 	}
 
 	public ChartViewDTO getChartView(String chartId, String deviceId, String username, String incomingSource) {
-		log.info("Buscando detalhes do gráfico");
 		List<DataPointDTO> dataPoints = new ArrayList<DataPointDTO>();
 		
 		ChartViewDTO chartViewDTO = new ChartViewDTO();

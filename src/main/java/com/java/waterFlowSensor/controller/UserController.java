@@ -37,22 +37,22 @@ public class UserController {
 	
 	@GetMapping(value = "/profile-data")
 	public ResponseEntity<UserDTO> retrieveProfileData(@Valid @RequestHeader String username) {
-		log.info("Requisição para recuperar dados completos do perfil do usuário " + username + " recebida");
-
+		log.info("Request to get profile data received: " + username);
+		
 		UserDTO user = userService.retrieveProfileData(username);
 
-		log.info("Retorno da requisição de recuperar dados completos do perfil " + gson.toJson(user));
-
+		log.info("Return from getting profile data: " + gson.toJson(user));
+		
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/profile/{currentUsername}")
 	public ResponseEntity<String> updateProfile(@Valid @RequestBody UserDTO user, @Valid @PathVariable String currentUsername) {
-		log.info("Requisição para atualizar dados do perfil " + currentUsername + " recebida: " + gson.toJson(user));
+		log.info("Request to update profile data from user " + currentUsername + " received: " + gson.toJson(user));
 
 		userService.updateProfile(user, currentUsername);
 
-		log.info("Usuário atualizado com sucesso");
+		log.info("User updated successfully");
 
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}

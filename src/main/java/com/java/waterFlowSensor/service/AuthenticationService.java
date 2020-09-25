@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 import com.java.waterFlowSensor.DAO.UserDAO;
 import com.java.waterFlowSensor.DTO.UserDTO;
 
-import lombok.extern.java.Log;
-
-@Log
 @Service
 public class AuthenticationService {
 	
@@ -20,7 +17,6 @@ public class AuthenticationService {
 			throw new IllegalArgumentException("Nome de usuário já cadastrado");
 		}
 		
-		log.info("Inserindo usuário no MongoDB");
 		userDao.insert(user);
 	}
 	

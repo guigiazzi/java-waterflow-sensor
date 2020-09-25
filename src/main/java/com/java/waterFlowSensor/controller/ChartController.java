@@ -38,45 +38,45 @@ public class ChartController {
 
 	@GetMapping(value = "/user-data")
 	public ResponseEntity<UserDTO> getUserData(@Valid @RequestHeader String username) {
-		//log.info("Request to get data from user " + username);
+		log.info("Request to get data from user " + username);
 
 		UserDTO user = homeService.getUserData(username);
 		 
-		//log.info("Return from getting data from user: " + gson.toJson(user));
+		log.info("Return from getting data from user: " + gson.toJson(user));
 
 		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/fixed-chart-view-cards")
 	public ResponseEntity<List<FixedChartViewCardDTO>> getChartViewCards() {
-		//log.info("Request to get fixed chart view cards");
+		log.info("Request to get fixed chart view cards");
 
 		List<FixedChartViewCardDTO> chartViewCards = homeService.getFixedChartViewCards();
 
-		//log.info("Return from getting fixed chart view cards: " + gson.toJson(chartViewCards));
+		log.info("Return from getting fixed chart view cards: " + gson.toJson(chartViewCards));
 
 		return new ResponseEntity<List<FixedChartViewCardDTO>>(chartViewCards, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/device-cards")
 	public ResponseEntity<List<String>> getDeviceCards(@Valid @RequestHeader String username) {
-		//log.info("Request to get device cards from user " + username);
+		log.info("Request to get device cards from user " + username);
 		
 		List<String> devices = homeService.getDeviceCards(username);
 
-		//log.info("Retorno da requisição de recuperar cards dos dispositivos: " + gson.toJson(devices));
-
+		log.info("Return from getting device cards: " + gson.toJson(devices));
+		
 		return new ResponseEntity<List<String>>(devices, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/device-details")
 	public ResponseEntity<List<DeviceDTO>> getDeviceDetails(@Valid @RequestHeader String username) {
-		//log.info("Requisição para recuperar detalhes do dispositivos recebida. Username: " + username);
-
+		log.info("Request to get device details received. Username:  " + username);
+		
 		List<DeviceDTO> devices = homeService.getDeviceDetails(username);
 
-		//log.info("Retorno da requisição de recuperar detalhes dos dispositivos: " + gson.toJson(devices));
-
+		log.info("Return from getting device details: " + gson.toJson(devices));
+		
 		return new ResponseEntity<List<DeviceDTO>>(devices, HttpStatus.OK);
 	}
 
@@ -84,25 +84,21 @@ public class ChartController {
 	public ResponseEntity<ChartViewDTO> getChartView(@Valid @RequestHeader String chartId,
 			@Nullable @RequestHeader String deviceId, @Valid @RequestHeader String username,
 			@Valid @RequestHeader String incomingSource) {
-		if(chartId.equals("4")) {
-			log.info("Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username +
+			
+		
+		log.info("Request to get chart received. ChartId: " + chartId + ". Username: " + username +
 					". DeviceId: " + deviceId + ". IncomingSource: " + incomingSource);
-		}
-		//log.info("Requisição para recuperar gráfico recebida. ChartId: " + chartId + ". Usuário: " + username);
-
+			
 		ChartViewDTO chartView = homeService.getChartView(chartId, deviceId, username, incomingSource);
 
-		if(chartId.equals("4")) {
-			log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
-		}
-		//log.info("Retorno da requisição de recuperar gráfico: " + gson.toJson(chartView));
-
+		log.info("Return from getting chart: " + gson.toJson(chartView));
+		
 		return new ResponseEntity<ChartViewDTO>(chartView, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentExceptions(IllegalArgumentException ex) {
-		//log.severe(ex.getMessage());
+		log.severe(ex.getMessage());
 
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
